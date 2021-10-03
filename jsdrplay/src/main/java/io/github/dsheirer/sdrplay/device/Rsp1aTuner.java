@@ -1,6 +1,8 @@
 package io.github.dsheirer.sdrplay.device;
 
 import io.github.dsheirer.sdrplay.SDRplay;
+import io.github.dsheirer.sdrplay.SDRplayException;
+import io.github.dsheirer.sdrplay.UpdateReason;
 import io.github.dsheirer.sdrplay.parameter.control.ControlParameters;
 import io.github.dsheirer.sdrplay.parameter.device.Rsp1aDeviceParameters;
 import io.github.dsheirer.sdrplay.parameter.tuner.Rsp1aTunerParameters;
@@ -23,5 +25,62 @@ public class Rsp1aTuner extends RspTuner<Rsp1aDeviceParameters, Rsp1aTunerParame
                       Rsp1aTunerParameters tunerParameters, ControlParameters controlParameters)
     {
         super(device, sdrplay, tunerSelect, deviceParameters, tunerParameters, controlParameters);
+    }
+
+    /**
+     * Indicates if the RF notch is enabled
+     */
+    public boolean isRFNotch()
+    {
+        return getDeviceParameters().isRFNotch();
+    }
+
+    /**
+     * Enables or disables the RF notch
+     * @param enable setting
+     * @throws SDRplayException if there is an error
+     */
+    public void setRFNotch(boolean enable) throws SDRplayException
+    {
+        getDeviceParameters().setRFNotch(enable);
+        update(UpdateReason.RSP1A_RF_NOTCH_CONTROL);
+    }
+
+    /**
+     * Indicates if the RF DAB notch is enabled
+     */
+    public boolean isRfDabNotch()
+    {
+        return getDeviceParameters().isRfDabNotch();
+    }
+
+    /**
+     * Enables or disables the RF DAB notch
+     * @param enable value
+     * @throws SDRplayException if there is an error
+     */
+    public void setRfDabNotch(boolean enable) throws SDRplayException
+    {
+        getDeviceParameters().setRfDabNotch(enable);
+        update(UpdateReason.RSP1A_RF_DAB_NOTCH_CONTROL);
+    }
+
+    /**
+     * Indicates if the Bias-T is enabled
+     */
+    public boolean isBiasT()
+    {
+        return getTunerParameters().isBiasT();
+    }
+
+    /**
+     * Enables or disables the Bias-T
+     * @param enable value
+     * @throws SDRplayException if there is an error
+     */
+    public void setBiasT(boolean enable) throws SDRplayException
+    {
+        getTunerParameters().setBiasT(enable);
+        update(UpdateReason.RSP1A_BIAS_T_CONTROL);
     }
 }

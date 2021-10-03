@@ -11,7 +11,7 @@ public class SynchronousUpdate
     private MemorySegment mMemorySegment;
 
     /**
-     * Constructs an instance from a foreign memory segment and transfers the structure fields into this instance.
+     * Constructs an instance from a foreign memory segment
      * @param memorySegment pointer
      */
     public SynchronousUpdate(MemorySegment memorySegment)

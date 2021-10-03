@@ -2,6 +2,7 @@ package io.github.dsheirer.sdrplay.callback;
 
 import io.github.dsheirer.sdrplay.api.sdrplay_api_StreamCallback_t;
 import io.github.dsheirer.sdrplay.api.sdrplay_api_StreamCbParamsT;
+import io.github.dsheirer.sdrplay.util.Flag;
 import jdk.incubator.foreign.CLinker;
 import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemoryAddress;
@@ -68,6 +69,6 @@ public class StreamCallbackAdapter implements sdrplay_api_StreamCallback_t
         StreamCallbackParameters parameters = new StreamCallbackParameters(parametersPointer
                 .asSegment(sdrplay_api_StreamCbParamsT.sizeof(), mResourceScope));
 
-        mStreamListener.processStreamA(i, q, parameters, reset != 0, deviceContext);
+        mStreamListener.processStreamA(i, q, parameters, Flag.evaluate(reset), deviceContext);
     }
 }

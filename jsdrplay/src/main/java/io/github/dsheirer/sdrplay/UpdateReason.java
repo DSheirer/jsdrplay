@@ -6,6 +6,8 @@ import java.util.EnumSet;
 
 /**
  * Update reason.
+ *
+ * These entries are used to notify the SDRplay API once settings are updated on the device.
  */
 public enum UpdateReason
 {
@@ -24,7 +26,7 @@ public enum UpdateReason
     RSP2_EXT_REF_CONTROL(sdrplay_api_h.sdrplay_api_Update_Rsp2_ExtRefControl(), "RSP2 External Reference Control"),
     RSP_DUO_EXT_REF_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_ExtRefControl(), "RSPduo External Reference Control"),
     SPARE_1(sdrplay_api_h.sdrplay_api_Update_Master_Spare_1(), "Spare 1"),
-    SPARE_2(sdrplay_api_h.sdrplay_api_Update_Master_Spare_1(), "Spare 2"),
+    SPARE_2(sdrplay_api_h.sdrplay_api_Update_Master_Spare_2(), "Spare 2"),
 
     //Master and Slave mode
     TUNER_GAIN_REDUCTION(sdrplay_api_h.sdrplay_api_Update_Tuner_Gr(), "Tuner Gain Reduction"),
@@ -40,7 +42,7 @@ public enum UpdateReason
     CONTROL_ADSB_MODE(sdrplay_api_h.sdrplay_api_Update_Ctrl_AdsbMode(), "Control ADSB Mode"),
     CONTROL_OVERLOAD_MESSAGE_ACK(sdrplay_api_h.sdrplay_api_Update_Ctrl_OverloadMsgAck(), "Control Overload Message Ack"),
     RSP_DUO_BIAS_T_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_BiasTControl(), "RSPduo Bias-T Control"),
-    RSP_DUO_AM_PORT_SELECT(sdrplay_api_h.sdrplay_api_Update_RspDuo_BiasTControl(), "RSPduo Bias-T Control"),
+    RSP_DUO_AM_PORT_SELECT(sdrplay_api_h.sdrplay_api_Update_RspDuo_AmPortSelect(), "RSPduo Bias-T Control"),
     RSP_DUO_TUNER_1_AM_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_Tuner1AmNotchControl(), "RSPduo Tuner 1 AM Notch Control"),
     RSP_DUO_RF_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_RfNotchControl(), "RSPduo RF Notch Control"),
     RSP_DUO_RF_DAB_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_RfDabNotchControl(), "RSPduo RF DAB Notch Control"),
@@ -111,7 +113,7 @@ public enum UpdateReason
      */
     public static int getReasons(UpdateReason ... reasons)
     {
-        int combined = 0;
+        int combined = UpdateReason.NONE.getValue();
 
         for(UpdateReason reason: reasons)
         {
@@ -133,7 +135,7 @@ public enum UpdateReason
      */
     public static int getExtendedReasons(UpdateReason ... reasons)
     {
-        int combined = 0;
+        int combined = UpdateReason.EXTENSION_NONE.getValue();
 
         for(UpdateReason reason: reasons)
         {

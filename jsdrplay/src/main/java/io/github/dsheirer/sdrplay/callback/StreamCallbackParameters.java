@@ -10,9 +10,9 @@ import jdk.incubator.foreign.MemorySegment;
 public class StreamCallbackParameters
 {
     private int mFirstSampleNumber;
-    private boolean mGrChanged;
-    private boolean mRfChanged;
-    private boolean mFsChanged;
+    private boolean mGainReductionChanged;
+    private boolean mRfFrequencyChanged;
+    private boolean mSampleRateChanged;
     private long mNumberSamples;
 
     /**
@@ -21,9 +21,9 @@ public class StreamCallbackParameters
     public StreamCallbackParameters(MemorySegment memorySegment)
     {
         mFirstSampleNumber = sdrplay_api_StreamCbParamsT.firstSampleNum$get(memorySegment);
-        mGrChanged = Flag.evaluate(sdrplay_api_StreamCbParamsT.grChanged$get(memorySegment));
-        mRfChanged = Flag.evaluate(sdrplay_api_StreamCbParamsT.rfChanged$get(memorySegment));
-        mFsChanged = Flag.evaluate(sdrplay_api_StreamCbParamsT.fsChanged$get(memorySegment));
+        mGainReductionChanged = Flag.evaluate(sdrplay_api_StreamCbParamsT.grChanged$get(memorySegment));
+        mRfFrequencyChanged = Flag.evaluate(sdrplay_api_StreamCbParamsT.rfChanged$get(memorySegment));
+        mSampleRateChanged = Flag.evaluate(sdrplay_api_StreamCbParamsT.fsChanged$get(memorySegment));
         mNumberSamples = sdrplay_api_StreamCbParamsT.numSamples$get(memorySegment);
     }
 
@@ -38,25 +38,25 @@ public class StreamCallbackParameters
     /**
      * Indicates if gain reduction value has changed
      */
-    public boolean isGrChanged()
+    public boolean isGainReductionChanged()
     {
-        return mGrChanged;
+        return mGainReductionChanged;
     }
 
     /**
      * Indicates if RF center frequency has changed
      */
-    public boolean isRfChanged()
+    public boolean isRfFrequencyChanged()
     {
-        return mRfChanged;
+        return mRfFrequencyChanged;
     }
 
     /**
      * Indicates if sample rate has changed
      */
-    public boolean isFsChanged()
+    public boolean isSampleRateChanged()
     {
-        return mFsChanged;
+        return mSampleRateChanged;
     }
 
     /**

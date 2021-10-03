@@ -3,9 +3,12 @@ package io.github.dsheirer.sdrplay.device;
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.SDRplayException;
 import io.github.dsheirer.sdrplay.UpdateReason;
+import io.github.dsheirer.sdrplay.parameter.control.AgcMode;
 import io.github.dsheirer.sdrplay.parameter.control.ControlParameters;
 import io.github.dsheirer.sdrplay.parameter.device.DeviceParameters;
 import io.github.dsheirer.sdrplay.parameter.tuner.GainReduction;
+import io.github.dsheirer.sdrplay.parameter.tuner.IfMode;
+import io.github.dsheirer.sdrplay.parameter.tuner.LoMode;
 import io.github.dsheirer.sdrplay.parameter.tuner.SampleRate;
 import io.github.dsheirer.sdrplay.parameter.tuner.TunerParameters;
 
@@ -85,10 +88,11 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
 
     /**
      * Convenience method for notifying the API that parameters for the device have been updated
+     *
      * @param updateReasons indicating what has been updated
      * @throws SDRplayException if there is an error
      */
-    protected void update(UpdateReason ... updateReasons) throws SDRplayException
+    protected void update(UpdateReason... updateReasons) throws SDRplayException
     {
         mSDRplay.update(getDevice(), getDevice().getDeviceHandle(), getTunerSelect(), updateReasons);
     }
@@ -103,6 +107,7 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
 
     /**
      * Sets the specified sample rate
+     *
      * @param sampleRate to apply
      * @throws SDRplayException if the device is not selected or available
      */
@@ -131,11 +136,12 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
      */
     public long getFrequency()
     {
-        return (long)getTunerParameters().getRfFrequency().getFrequency();
+        return (long) getTunerParameters().getRfFrequency().getFrequency();
     }
 
     /**
      * Sets the center frequency for the tuner
+     *
      * @param frequency in Hertz
      * @throws SDRplayException if there is an error
      */
@@ -161,6 +167,7 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
 
     /**
      * Updates the gain reduction, if necessary, for the specified RF frequency
+     *
      * @param frequency value
      */
     private void updateGainReduction(long frequency)
@@ -173,11 +180,171 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
 
     /**
      * Selects a gain value index from the current gain reduction values
+     *
      * @param index of the gain reduction values to use
      */
     public void setGain(int index) throws SDRplayException
     {
         getTunerParameters().getGain().setGain(getGainReduction(), index);
         update(UpdateReason.TUNER_GAIN_REDUCTION);
+    }
+
+    /**
+     * Sets the automatic gain contral (AGC) mode
+     *
+     * @param mode to set
+     * @throws SDRplayException if there is an error
+     */
+    public void setAGC(AgcMode mode) throws SDRplayException
+    {
+        getControlParameters().getAgc().setAgcMode(mode);
+        update(UpdateReason.CONTROL_AGC);
+    }
+
+    /**
+     * Enables or disables DC correction
+     *
+     * @param enable true or false
+     * @throws SDRplayException if there is an error
+     */
+    public void setDCCorrection(boolean enable) throws SDRplayException
+    {
+        getControlParameters().getDcOffset().setDC(enable);
+        update(UpdateReason.CONTROL_DC_OFFSET_IQ_IMBALANCE);
+    }
+
+    /**
+     * Enables or disables IQ imbalance correction
+     *
+     * @param enable true or false
+     * @throws SDRplayException if there is an error
+     */
+    public void setIQCorrection(boolean enable) throws SDRplayException
+    {
+        getControlParameters().getDcOffset().setIQ(enable);
+        update(UpdateReason.CONTROL_DC_OFFSET_IQ_IMBALANCE);
+    }
+
+    /**
+     * Sets or updates the parts per million (ppm) frequency correction
+     *
+     * @param ppm value
+     * @throws SDRplayException
+     */
+    public void setPPM(double ppm) throws SDRplayException
+    {
+        getDeviceParameters().setPPM(ppm);
+        update(UpdateReason.DEVICE_PPM);
+    }
+
+    /**
+     * Parts per million (PPM) frequency correction value
+     *
+     * @return ppm value
+     */
+    public double getPPM()
+    {
+        return getDeviceParameters().getPPM();
+    }
+
+    /**
+     * Perform synchronous update
+     *
+     * @param sampleNumber value
+     * @param period value
+     * @throws SDRplayException if there is an error
+     */
+    public void setSynchronousUpdate(int sampleNumber, int period) throws SDRplayException
+    {
+        getDeviceParameters().getSynchronousUpdate().set(sampleNumber, period);
+        update(UpdateReason.DEVICE_SYNC_UPDATE);
+    }
+
+    /**
+     * Resets device functions to default
+     *
+     * @param frequency to reset
+     * @param sampleRate to reset
+     * @param gain to reset
+     * @throws SDRplayException if there is an error
+     */
+    public void reset(boolean frequency, boolean sampleRate, boolean gain) throws SDRplayException
+    {
+        getDeviceParameters().getResetFlags().resetGain(gain);
+        getDeviceParameters().getResetFlags().resetFrequency(frequency);
+        getDeviceParameters().getResetFlags().resetSampleRate(sampleRate);
+        update(UpdateReason.DEVICE_RESET_FLAGS);
+    }
+
+    /**
+     * Resets the frequency.
+     *
+     * @param frequency true to reset
+     * @throws SDRplayException if there is an error
+     */
+    public void resetFrequency(boolean frequency) throws SDRplayException
+    {
+        reset(frequency, false, false);
+    }
+
+    /**
+     * Resets the sample rate.
+     *
+     * @param sampleRate true to reset
+     * @throws SDRplayException if there is an error
+     */
+    public void resetSampleRate(boolean sampleRate) throws SDRplayException
+    {
+        reset(false, sampleRate, false);
+    }
+
+    /**
+     * Resets the gain (reduction).
+     *
+     * @param gain true to reset
+     * @throws SDRplayException if there is an error
+     */
+    public void resetGain(boolean gain) throws SDRplayException
+    {
+        reset(false, false, gain);
+    }
+
+    /**
+     * IF mode (type)
+     */
+    public IfMode getIfMode()
+    {
+        return getTunerParameters().getIfMode();
+    }
+
+    /**
+     * Sets the IF mode (type)
+     * @param mode to set
+     * @throws SDRplayException if there is an error
+     */
+    public void setIfMode(IfMode mode) throws SDRplayException
+    {
+        getTunerParameters().setIfMode(mode);
+        update(UpdateReason.TUNER_IF_TYPE);
+    }
+
+    /**
+     * Local Oscillator (LO) mode
+     * @return mode
+     */
+    public LoMode getLoMode()
+    {
+        return getTunerParameters().getLoMode();
+    }
+
+    /**
+     * Sets the Local Oscillator (LO) mode
+     * @param mode to set
+     * @throws SDRplayException if there is an error
+     */
+    public void setLoMode(LoMode mode) throws SDRplayException
+    {
+        getTunerParameters().setLoMode(mode);
+        update(UpdateReason.TUNER_LO_MODE);
     }
 }

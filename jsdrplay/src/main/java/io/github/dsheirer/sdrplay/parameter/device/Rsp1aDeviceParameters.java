@@ -49,7 +49,7 @@ public class Rsp1aDeviceParameters extends DeviceParameters
     /**
      * Indicates if DAB RF notch is enabled
      */
-    public boolean isRFDABNotch()
+    public boolean isRfDabNotch()
     {
         return Flag.evaluate(sdrplay_api_Rsp1aParamsT.rfDabNotchEnable$get(getRsp1AMemorySegment()));
     }
@@ -57,7 +57,7 @@ public class Rsp1aDeviceParameters extends DeviceParameters
     /**
      * Enables or disables the DAB RF notch
      */
-    public void setRFDABNotch(boolean enable)
+    public void setRfDabNotch(boolean enable)
     {
         sdrplay_api_Rsp1aParamsT.rfNotchEnable$set(getRsp1AMemorySegment(), Flag.of(enable));
     }
