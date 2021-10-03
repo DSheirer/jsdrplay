@@ -1,0 +1,27 @@
+package io.github.dsheirer.sdrplay.device;
+
+import io.github.dsheirer.sdrplay.SDRplay;
+import io.github.dsheirer.sdrplay.parameter.control.ControlParameters;
+import io.github.dsheirer.sdrplay.parameter.device.RspDuoDeviceParameters;
+import io.github.dsheirer.sdrplay.parameter.tuner.RspDuoTunerParameters;
+
+/**
+ * RSPduo Tuner 2
+ */
+public class RspDuoTuner2 extends RspDuoTuner
+{
+    /**
+     * Constructs an instance
+     *
+     * @param device parent for this tuner
+     * @param sdrplay api
+     * @param deviceParameters for this device
+     * @param tunerParameters for this tuner
+     * @param controlParameters for this device
+     */
+    public RspDuoTuner2(Device device, SDRplay sdrplay, RspDuoDeviceParameters deviceParameters,
+                        RspDuoTunerParameters tunerParameters, ControlParameters controlParameters)
+    {
+        super(device, sdrplay, TunerSelect.TUNER_2, deviceParameters, tunerParameters, controlParameters);
+    }
+}
