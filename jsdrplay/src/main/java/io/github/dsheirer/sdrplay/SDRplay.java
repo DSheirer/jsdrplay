@@ -2,12 +2,12 @@ package io.github.dsheirer.sdrplay;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DevParamsT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DeviceParamsT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DeviceT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_ErrorInfoT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_RxChannelParamsT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_h;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DevParamsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceParamsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_ErrorInfoT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_RxChannelParamsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_h;
 import io.github.dsheirer.sdrplay.device.Device;
 import io.github.dsheirer.sdrplay.device.DeviceFactory;
 import io.github.dsheirer.sdrplay.device.TunerSelect;
@@ -24,6 +24,7 @@ import jdk.incubator.foreign.SegmentAllocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +32,11 @@ import java.util.List;
 public class SDRplay
 {
     public static final String SDRPLAY_API_LIBRARY_NAME = "sdrplay_api";
+    public static final String SDRPLAY_API_PATH_LINUX = "/usr/local/lib";
+    public static final String SDRPLAY_API_PATH_MAC_OS = "/todo"; //TODO: research this
+    public static final String SDRPLAY_API_PATH_WINDOWS = System.getenv("ProgramFiles") +
+        "\\SDRplay\\API\\" + (System.getProperty("sun.arch.data.model").contentEquals("64") ? "x64" : "x86") + "\\sdrplay_api.dll";
+    public static final String JAVA_LIBRARY_PATH_KEY = "java.library.path";
 
     private static Logger mLog = LoggerFactory.getLogger(SDRplay.class);
 
@@ -95,16 +101,17 @@ public class SDRplay
     {
         try
         {
+            System.setProperty(JAVA_LIBRARY_PATH_KEY, SDRPLAY_API_PATH_WINDOWS + File.pathSeparator + System.getProperty(JAVA_LIBRARY_PATH_KEY));
             System.loadLibrary(SDRPLAY_API_LIBRARY_NAME);
             mLog.info("SDRPlay API library loaded");
             return true;
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             String name = System.mapLibraryName(SDRPLAY_API_LIBRARY_NAME);
             mLog.warn("SDRPlay API library not found/installed on this system.  Ensure the API is installed and " +
                     "the 'java.library.path' JVM property contains path to the library file [" + name + "].  Current " +
-                    "property contents: " + System.getProperty("java.library.path"));
+                    "property contents: " + System.getProperty(JAVA_LIBRARY_PATH_KEY));
         }
 
         return false;
@@ -112,9 +119,10 @@ public class SDRplay
 
     private void loadDevices()
     {
-        SegmentAllocator allocator = SegmentAllocator.ofScope(mResourceScope);
-        MemorySegment devicesArray = sdrplay_api_DeviceT.allocateArray(sdrplay_api_h.SDRPLAY_MAX_DEVICES(), allocator);
-        MemorySegment deviceCount = allocator.allocate(CLinker.C_INT, 0);
+        //Get a version-correct array of DeviceT structures
+        MemorySegment devicesArray = DeviceFactory.createForeignDeviceArray(getAPIVersion(), mSegmentAllocator);
+
+        MemorySegment deviceCount = mSegmentAllocator.allocate(CLinker.C_INT, 0);
 
         Status status = Status.fromValue(sdrplay_api_h.sdrplay_api_GetDevices(devicesArray, deviceCount,
                 sdrplay_api_h.SDRPLAY_MAX_DEVICES()));

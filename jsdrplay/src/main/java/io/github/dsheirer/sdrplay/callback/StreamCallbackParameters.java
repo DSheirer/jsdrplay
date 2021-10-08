@@ -1,6 +1,6 @@
 package io.github.dsheirer.sdrplay.callback;
 
-import io.github.dsheirer.sdrplay.api.sdrplay_api_StreamCbParamsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_StreamCbParamsT;
 import io.github.dsheirer.sdrplay.util.Flag;
 import jdk.incubator.foreign.MemorySegment;
 

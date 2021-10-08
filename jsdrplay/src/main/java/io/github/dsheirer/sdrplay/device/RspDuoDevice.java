@@ -1,9 +1,10 @@
 package io.github.dsheirer.sdrplay.device;
 
 import io.github.dsheirer.sdrplay.SDRplayException;
+import io.github.dsheirer.sdrplay.Version;
 import io.github.dsheirer.sdrplay.parameter.composite.RspDuoCompositeParameters;
 import io.github.dsheirer.sdrplay.SDRplay;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DeviceT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
 import jdk.incubator.foreign.MemorySegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,12 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
      * Constructs an SDRPlay RSPduo device from the foreign memory segment
      *
      * @param sdrPlay api instance that created this device
+     * @param version of the api
      * @param memorySegment
      */
-    RspDuoDevice(SDRplay sdrPlay, MemorySegment memorySegment)
+    RspDuoDevice(SDRplay sdrPlay, Version version, MemorySegment memorySegment)
     {
-        super(sdrPlay, memorySegment, DeviceType.RSPduo);
+        super(sdrPlay, version, memorySegment, DeviceType.RSPduo);
 
         //Auto-set the tuner to dual tuner mode.
         if(getRspDuoMode() == RspDuoMode.UNKNOWN)

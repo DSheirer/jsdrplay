@@ -1,6 +1,6 @@
 package io.github.dsheirer.sdrplay;
 
-import io.github.dsheirer.sdrplay.api.sdrplay_api_h;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_h;
 
 public enum Status
 {
@@ -31,7 +31,7 @@ public enum Status
     INVALID_SERVICE_VERSION(sdrplay_api_h.sdrplay_api_InvalidServiceVersion(), "Invalid Service Version"),
 
     //Custom status codes
-    API_UNAVAILABLE(-2, "SDRplay API Not Installed/Available"),
+    API_UNAVAILABLE(-2, "SDRplay API is not installed or it has an unsupported version"),
     UNKNOWN(-1, "Unknown");
 
     private int mValue;

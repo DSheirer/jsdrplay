@@ -1,6 +1,6 @@
 package io.github.dsheirer.sdrplay.error;
 
-import io.github.dsheirer.sdrplay.api.sdrplay_api_ErrorInfoT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_ErrorInfoT;
 import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemorySegment;
 

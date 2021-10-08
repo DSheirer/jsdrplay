@@ -1,6 +1,6 @@
 package io.github.dsheirer.sdrplay.parameter.event;
 
-import io.github.dsheirer.sdrplay.api.sdrplay_api_GainCbParamT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_GainCbParamT;
 import jdk.incubator.foreign.MemorySegment;
 
 /**

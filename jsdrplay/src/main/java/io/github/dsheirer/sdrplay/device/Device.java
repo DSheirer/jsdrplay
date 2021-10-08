@@ -3,8 +3,9 @@ package io.github.dsheirer.sdrplay.device;
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.SDRplayException;
 import io.github.dsheirer.sdrplay.UpdateReason;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DeviceT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_h;
+import io.github.dsheirer.sdrplay.Version;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_h;
 import io.github.dsheirer.sdrplay.parameter.composite.CompositeParameters;
 import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemoryAddress;
@@ -20,10 +21,12 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
     private static final Logger mLog = LoggerFactory.getLogger(Device.class);
 
     private SDRplay mSDRplay;
+    private Version mVersion;
     private MemorySegment mDeviceMemorySegment;
     private DeviceType mDeviceType;
 
     private String mSerialNumber;
+    private boolean mValid;
     private boolean mSelected = false;
     private T mCompositeParameters;
 
@@ -32,9 +35,10 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      * @param sdrPlay api instance that created this device
      * @param deviceMemorySegment
      */
-    public Device(SDRplay sdrPlay, MemorySegment deviceMemorySegment, DeviceType deviceType)
+    public Device(SDRplay sdrPlay, Version version, MemorySegment deviceMemorySegment, DeviceType deviceType)
     {
         mSDRplay = sdrPlay;
+        mVersion = version;
         mDeviceMemorySegment = deviceMemorySegment;
         mDeviceType = deviceType;
 
@@ -45,6 +49,11 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
             serialBytes[x] = MemoryAccess.getByteAtOffset(serialSegment, x);
         }
         mSerialNumber = new String(serialBytes).trim();
+
+        if(mVersion.gte(Version.V3_08))
+        {
+            mValid = true;//TODO: use jextract to create the version 3.08 class for DeviceT
+        }
     }
 
     /**
@@ -87,6 +96,14 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
     private boolean selected()
     {
         return mSelected;
+    }
+
+    /**
+     * Indicates if the device is valid and ready for use
+     */
+    public boolean isValid()
+    {
+        return mValid;
     }
 
     /**

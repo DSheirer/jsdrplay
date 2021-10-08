@@ -2,6 +2,7 @@ package io.github.dsheirer.sdrplay.device;
 
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.SDRplayException;
+import io.github.dsheirer.sdrplay.Version;
 import io.github.dsheirer.sdrplay.parameter.composite.Rsp1CompositeParameters;
 import jdk.incubator.foreign.MemorySegment;
 
@@ -16,11 +17,12 @@ public class Rsp1Device extends Device<Rsp1CompositeParameters, Rsp1Tuner>
      * Constructs an SDRPlay RSP1 device from the foreign memory segment
      *
      * @param sdrPlay api instance that created this device
+     * @param version of the api
      * @param memorySegment of foreign memory
      */
-    Rsp1Device(SDRplay sdrPlay, MemorySegment memorySegment)
+    Rsp1Device(SDRplay sdrPlay, Version version, MemorySegment memorySegment)
     {
-        super(sdrPlay, memorySegment, DeviceType.RSP1);
+        super(sdrPlay, version, memorySegment, DeviceType.RSP1);
     }
 
     @Override

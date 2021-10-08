@@ -1,7 +1,7 @@
 package io.github.dsheirer.sdrplay.parameter.device;
 
 import io.github.dsheirer.sdrplay.util.Flag;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_ResetFlagsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_ResetFlagsT;
 import jdk.incubator.foreign.MemorySegment;
 
 /**
