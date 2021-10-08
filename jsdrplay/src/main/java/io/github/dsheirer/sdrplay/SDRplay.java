@@ -133,7 +133,7 @@ public class SDRplay
             devicesArray.elements(sdrplay_api_DeviceT.$LAYOUT()).limit(count).forEach(memorySegment ->
             {
 
-                mDevices.add(DeviceFactory.create(SDRplay.this, memorySegment));
+                mDevices.add(DeviceFactory.createDevice(SDRplay.this, memorySegment));
             });
 
             mLog.info("Loaded Device Count: " + mDevices.size());

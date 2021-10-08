@@ -24,11 +24,11 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
      *
      * @param sdrPlay api instance that created this device
      * @param version of the api
-     * @param memorySegment
+     * @param deviceStruct parser
      */
-    RspDuoDevice(SDRplay sdrPlay, Version version, MemorySegment memorySegment)
+    RspDuoDevice(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
     {
-        super(sdrPlay, version, memorySegment, DeviceType.RSPduo);
+        super(sdrPlay, version, deviceStruct);
 
         //Auto-set the tuner to dual tuner mode.
         if(getRspDuoMode() == RspDuoMode.UNKNOWN)
@@ -110,7 +110,7 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
      */
     public RspDuoMode getRspDuoMode()
     {
-        return RspDuoMode.fromValue(sdrplay_api_DeviceT.rspDuoMode$get(getDeviceMemorySegment()));
+        return getDeviceStruct().getRspDuoMode();
     }
 
     /**
@@ -125,6 +125,7 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
         }
         else
         {
+            //TODO: add this to the api
             sdrplay_api_DeviceT.rspDuoMode$set(getDeviceMemorySegment(), mode.getValue());
         }
     }

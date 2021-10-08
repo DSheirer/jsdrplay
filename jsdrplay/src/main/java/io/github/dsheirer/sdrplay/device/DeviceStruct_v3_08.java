@@ -20,10 +20,10 @@ public class DeviceStruct_v3_08 implements IDeviceStruct
      * Constructs an instance
      * @param deviceMemorySegment of foreign memory
      */
-    public DeviceStruct_v3_08(MemorySegment deviceMemorySegment, DeviceType deviceType)
+    public DeviceStruct_v3_08(MemorySegment deviceMemorySegment)
     {
         mDeviceMemorySegment = deviceMemorySegment;
-        mDeviceType = deviceType;
+        mDeviceType = DeviceType.fromValue(io.github.dsheirer.sdrplay.api.v3_08.sdrplay_api_DeviceT.hwVer$get(mDeviceMemorySegment));
 
         MemorySegment serialSegment = sdrplay_api_DeviceT.SerNo$slice(mDeviceMemorySegment);
         byte[] serialBytes = new byte[sdrplay_api_h.SDRPLAY_MAX_SER_NO_LEN()];

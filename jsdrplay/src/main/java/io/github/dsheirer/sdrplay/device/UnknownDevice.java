@@ -16,11 +16,11 @@ public class UnknownDevice extends Device
      *
      * @param sdrPlay api instance that created this device
      * @param version of the api
-     * @param memorySegment foreign memory for this device
+     * @param deviceStruct parser
      */
-    UnknownDevice(SDRplay sdrPlay, Version version, MemorySegment memorySegment)
+    UnknownDevice(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
     {
-        super(sdrPlay, version, memorySegment, DeviceType.UNKNOWN);
+        super(sdrPlay, version, deviceStruct);
     }
 
     @Override

@@ -18,11 +18,11 @@ public class RspDxDevice extends Device<RspDxCompositeParameters, RspDxTuner>
      *
      * @param sdrPlay api instance that created this device
      * @param version of the api
-     * @param memorySegment of foreign memory
+     * @param deviceStruct parser
      */
-    RspDxDevice(SDRplay sdrPlay, Version version, MemorySegment memorySegment)
+    RspDxDevice(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
     {
-        super(sdrPlay, version, memorySegment, DeviceType.RSPdx);
+        super(sdrPlay, version, deviceStruct);
     }
 
 

@@ -18,11 +18,11 @@ public class Rsp2Device extends Device<Rsp2CompositeParameters, Rsp2Tuner>
      *
      * @param sdrPlay api instance that created this device
      * @param version of the api
-     * @param memorySegment of foreign memory
+     * @param deviceStruct parser
      */
-    Rsp2Device(SDRplay sdrPlay, Version version, MemorySegment memorySegment)
+    Rsp2Device(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
     {
-        super(sdrPlay, version, memorySegment, DeviceType.RSP2);
+        super(sdrPlay, version, deviceStruct);
     }
 
     @Override

@@ -44,14 +44,14 @@ public class DeviceFactory
             devicesArray.elements(io.github.dsheirer.sdrplay.api.v3_08.sdrplay_api_DeviceT.$LAYOUT())
                     .limit(count).forEach(memorySegment ->
             {
-                devices.add(DeviceFactory.create(sdrplay, version, memorySegment));
+                devices.add(DeviceFactory.createDevice(sdrplay, version, memorySegment));
             });
         }
         else if(version == Version.V3_07)
         {
             devicesArray.elements(sdrplay_api_DeviceT.$LAYOUT()).limit(count).forEach(memorySegment ->
             {
-                devices.add(DeviceFactory.create(sdrplay, version, memorySegment));
+                devices.add(DeviceFactory.createDevice(sdrplay, version, memorySegment));
             });
         }
         else
@@ -69,30 +69,52 @@ public class DeviceFactory
      * @param deviceMemorySegment instance for the device
      * @return correctly typed device
      */
-    public static Device create(SDRplay sdrPlay, Version version, MemorySegment deviceMemorySegment)
+    public static Device createDevice(SDRplay sdrPlay, Version version, MemorySegment deviceMemorySegment)
     {
-        DeviceType deviceType = getDeviceType(deviceMemorySegment);
+        IDeviceStruct deviceStruct = createDeviceStruct(version, deviceMemorySegment);
 
-        switch(deviceType)
+        switch(deviceStruct.getDeviceType())
         {
             case RSP1 -> {
-                return new Rsp1Device(sdrPlay, version, deviceMemorySegment);
+                return new Rsp1Device(sdrPlay, version, deviceStruct);
             }
             case RSP1A -> {
-                return new Rsp1aDevice(sdrPlay, version, deviceMemorySegment);
+                return new Rsp1aDevice(sdrPlay, version, deviceStruct);
             }
             case RSP2 -> {
-                return new Rsp2Device(sdrPlay, version, deviceMemorySegment);
+                return new Rsp2Device(sdrPlay, version, deviceStruct);
             }
             case RSPduo -> {
-                return new RspDuoDevice(sdrPlay, version, deviceMemorySegment);
+                return new RspDuoDevice(sdrPlay, version, deviceStruct);
             }
             case RSPdx -> {
-                return new RspDxDevice(sdrPlay, version, deviceMemorySegment);
+                return new RspDxDevice(sdrPlay, version, deviceStruct);
             }
             default -> {
-                return new UnknownDevice(sdrPlay, version, deviceMemorySegment);
+                return new UnknownDevice(sdrPlay, version, deviceStruct);
             }
+        }
+    }
+
+    /**
+     * Creates a device structure parser for the specified version
+     * @param version to create
+     * @param deviceMemorySegment
+     * @return
+     */
+    private static IDeviceStruct createDeviceStruct(Version version, MemorySegment deviceMemorySegment)
+    {
+        if(version == Version.V3_07)
+        {
+            return new DeviceStruct_v3_07(deviceMemorySegment);
+        }
+        else if(version.gte(Version.V3_08))
+        {
+            return new DeviceStruct_v3_08(deviceMemorySegment);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unsupported version: " + version);
         }
     }
 

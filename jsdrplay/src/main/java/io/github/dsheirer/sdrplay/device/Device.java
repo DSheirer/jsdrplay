@@ -22,38 +22,29 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
 
     private SDRplay mSDRplay;
     private Version mVersion;
-    private MemorySegment mDeviceMemorySegment;
-    private DeviceType mDeviceType;
-
-    private String mSerialNumber;
-    private boolean mValid;
+    private IDeviceStruct mDeviceStruct;
     private boolean mSelected = false;
     private T mCompositeParameters;
 
     /**
      * Constructs an SDRPlay device from the foreign memory segment
      * @param sdrPlay api instance that created this device
-     * @param deviceMemorySegment
+     * @param version of the api
+     * @param deviceStruct to parse or access the fields of the device structure
      */
-    public Device(SDRplay sdrPlay, Version version, MemorySegment deviceMemorySegment, DeviceType deviceType)
+    public Device(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
     {
         mSDRplay = sdrPlay;
         mVersion = version;
-        mDeviceMemorySegment = deviceMemorySegment;
-        mDeviceType = deviceType;
+        mDeviceStruct = deviceStruct;
+    }
 
-        MemorySegment serialSegment = sdrplay_api_DeviceT.SerNo$slice(mDeviceMemorySegment);
-        byte[] serialBytes = new byte[sdrplay_api_h.SDRPLAY_MAX_SER_NO_LEN()];
-        for(int x = 0; x < sdrplay_api_h.SDRPLAY_MAX_SER_NO_LEN(); x++)
-        {
-            serialBytes[x] = MemoryAccess.getByteAtOffset(serialSegment, x);
-        }
-        mSerialNumber = new String(serialBytes).trim();
-
-        if(mVersion.gte(Version.V3_08))
-        {
-            mValid = true;//TODO: use jextract to create the version 3.08 class for DeviceT
-        }
+    /**
+     * Version specific device structure parser
+     */
+    protected IDeviceStruct getDeviceStruct()
+    {
+        return mDeviceStruct;
     }
 
     /**
@@ -103,7 +94,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      */
     public boolean isValid()
     {
-        return mValid;
+        return getDeviceStruct().isValid();
     }
 
     /**
@@ -141,7 +132,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      */
     protected MemorySegment getDeviceMemorySegment()
     {
-        return mDeviceMemorySegment;
+        return getDeviceStruct().getDeviceMemorySegment();
     }
 
     /**
@@ -159,7 +150,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
                     "device handle");
         }
 
-        return sdrplay_api_DeviceT.dev$get(mDeviceMemorySegment);
+        return getDeviceStruct().getDeviceHandle();
     }
 
     /**
@@ -207,7 +198,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      */
     public DeviceType getDeviceType()
     {
-        return mDeviceType;
+        return getDeviceStruct().getDeviceType();
     }
 
     /**
@@ -215,7 +206,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      */
     public String getSerialNumber()
     {
-        return mSerialNumber;
+        return getDeviceStruct().getSerialNumber();
     }
 
     @Override
