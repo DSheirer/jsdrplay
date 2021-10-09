@@ -1,6 +1,6 @@
 package io.github.dsheirer.sdrplay.parameter.event;
 
-import io.github.dsheirer.sdrplay.api.sdrplay_api_PowerOverloadCbParamT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_PowerOverloadCbParamT;
 import jdk.incubator.foreign.MemorySegment;
 
 /**

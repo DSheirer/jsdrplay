@@ -1,8 +1,8 @@
 package io.github.dsheirer.sdrplay.callback;
 
-import io.github.dsheirer.sdrplay.api.sdrplay_api_CallbackFnsT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_EventCallback_t;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_StreamCallback_t;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_CallbackFnsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_EventCallback_t;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_StreamCallback_t;
 import jdk.incubator.foreign.MemoryAddress;
 import jdk.incubator.foreign.MemorySegment;
 import jdk.incubator.foreign.ResourceScope;

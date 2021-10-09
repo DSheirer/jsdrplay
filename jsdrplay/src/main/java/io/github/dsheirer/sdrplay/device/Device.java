@@ -3,8 +3,9 @@ package io.github.dsheirer.sdrplay.device;
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.SDRplayException;
 import io.github.dsheirer.sdrplay.UpdateReason;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DeviceT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_h;
+import io.github.dsheirer.sdrplay.Version;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_h;
 import io.github.dsheirer.sdrplay.parameter.composite.CompositeParameters;
 import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemoryAddress;
@@ -20,31 +21,30 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
     private static final Logger mLog = LoggerFactory.getLogger(Device.class);
 
     private SDRplay mSDRplay;
-    private MemorySegment mDeviceMemorySegment;
-    private DeviceType mDeviceType;
-
-    private String mSerialNumber;
+    private Version mVersion;
+    private IDeviceStruct mDeviceStruct;
     private boolean mSelected = false;
     private T mCompositeParameters;
 
     /**
      * Constructs an SDRPlay device from the foreign memory segment
      * @param sdrPlay api instance that created this device
-     * @param deviceMemorySegment
+     * @param version of the api
+     * @param deviceStruct to parse or access the fields of the device structure
      */
-    public Device(SDRplay sdrPlay, MemorySegment deviceMemorySegment, DeviceType deviceType)
+    public Device(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
     {
         mSDRplay = sdrPlay;
-        mDeviceMemorySegment = deviceMemorySegment;
-        mDeviceType = deviceType;
+        mVersion = version;
+        mDeviceStruct = deviceStruct;
+    }
 
-        MemorySegment serialSegment = sdrplay_api_DeviceT.SerNo$slice(mDeviceMemorySegment);
-        byte[] serialBytes = new byte[sdrplay_api_h.SDRPLAY_MAX_SER_NO_LEN()];
-        for(int x = 0; x < sdrplay_api_h.SDRPLAY_MAX_SER_NO_LEN(); x++)
-        {
-            serialBytes[x] = MemoryAccess.getByteAtOffset(serialSegment, x);
-        }
-        mSerialNumber = new String(serialBytes).trim();
+    /**
+     * Version specific device structure parser
+     */
+    protected IDeviceStruct getDeviceStruct()
+    {
+        return mDeviceStruct;
     }
 
     /**
@@ -90,6 +90,14 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
     }
 
     /**
+     * Indicates if the device is valid and ready for use
+     */
+    public boolean isValid()
+    {
+        return getDeviceStruct().isValid();
+    }
+
+    /**
      * Releases this device from exclusive use.
      */
     public void release() throws SDRplayException
@@ -124,7 +132,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      */
     protected MemorySegment getDeviceMemorySegment()
     {
-        return mDeviceMemorySegment;
+        return getDeviceStruct().getDeviceMemorySegment();
     }
 
     /**
@@ -142,7 +150,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
                     "device handle");
         }
 
-        return sdrplay_api_DeviceT.dev$get(mDeviceMemorySegment);
+        return getDeviceStruct().getDeviceHandle();
     }
 
     /**
@@ -190,7 +198,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      */
     public DeviceType getDeviceType()
     {
-        return mDeviceType;
+        return getDeviceStruct().getDeviceType();
     }
 
     /**
@@ -198,7 +206,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      */
     public String getSerialNumber()
     {
-        return mSerialNumber;
+        return getDeviceStruct().getSerialNumber();
     }
 
     @Override

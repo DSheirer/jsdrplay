@@ -1,7 +1,7 @@
 package io.github.dsheirer.sdrplay.parameter.control;
 
 import io.github.dsheirer.sdrplay.util.Flag;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DecimationT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DecimationT;
 import jdk.incubator.foreign.MemorySegment;
 
 /**

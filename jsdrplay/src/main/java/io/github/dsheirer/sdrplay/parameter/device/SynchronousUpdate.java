@@ -1,6 +1,6 @@
 package io.github.dsheirer.sdrplay.parameter.device;
 
-import io.github.dsheirer.sdrplay.api.sdrplay_api_SyncUpdateT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_SyncUpdateT;
 import jdk.incubator.foreign.MemorySegment;
 
 /**

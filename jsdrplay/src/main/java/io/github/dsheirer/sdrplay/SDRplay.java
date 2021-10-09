@@ -2,12 +2,12 @@ package io.github.dsheirer.sdrplay;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DevParamsT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DeviceParamsT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DeviceT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_ErrorInfoT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_RxChannelParamsT;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_h;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DevParamsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceParamsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_ErrorInfoT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_RxChannelParamsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_h;
 import io.github.dsheirer.sdrplay.device.Device;
 import io.github.dsheirer.sdrplay.device.DeviceFactory;
 import io.github.dsheirer.sdrplay.device.TunerSelect;
@@ -15,6 +15,7 @@ import io.github.dsheirer.sdrplay.error.DebugLevel;
 import io.github.dsheirer.sdrplay.error.ErrorInformation;
 import io.github.dsheirer.sdrplay.parameter.composite.CompositeParameters;
 import io.github.dsheirer.sdrplay.parameter.composite.CompositeParametersFactory;
+import io.github.dsheirer.sdrplay.util.Flag;
 import jdk.incubator.foreign.CLinker;
 import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemoryAddress;
@@ -24,6 +25,7 @@ import jdk.incubator.foreign.SegmentAllocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +33,11 @@ import java.util.List;
 public class SDRplay
 {
     public static final String SDRPLAY_API_LIBRARY_NAME = "sdrplay_api";
+    public static final String SDRPLAY_API_PATH_LINUX = "/usr/local/lib";
+    public static final String SDRPLAY_API_PATH_MAC_OS = "/todo"; //TODO: research this
+    public static final String SDRPLAY_API_PATH_WINDOWS = System.getenv("ProgramFiles") +
+            "\\SDRplay\\API\\" + (System.getProperty("sun.arch.data.model").contentEquals("64") ? "x64" : "x86") + "\\sdrplay_api.dll";
+    public static final String JAVA_LIBRARY_PATH_KEY = "java.library.path";
 
     private static Logger mLog = LoggerFactory.getLogger(SDRplay.class);
 
@@ -77,34 +84,44 @@ public class SDRplay
         {
             mAvailable = false;
         }
-        //TODO: add all java.library.path for linux, windows, mac, etc.
 
-        //TODO: this class should maintain a list of devices and it should register as a listener for the device
-        //to detect when the device is disconnected, so that the device can be removed from the list, in addition
-        //to providing that event to any other users of the device.
+        if(isAvailable())
+        {
+            //TODO: add all java.library.path for linux, windows, mac, etc.
 
-        mLog.info("Loading Devices ...");
-        loadDevices();
+            //TODO: this class should maintain a list of devices and it should register as a listener for the device
+            //to detect when the device is disconnected, so that the device can be removed from the list, in addition
+            //to providing that event to any other users of the device.
+
+            mLog.info("Loading Devices ...");
+            loadDevices();
+        }
+        else
+        {
+            mLog.info("No devices loaded.  Detected API Version: " + getAPIVersion());
+        }
     }
 
     /**
      * Attempts to load the SDRPlay API library from the local system.
+     *
      * @return true if library was loaded successfully.
      */
     private boolean loadLibrary()
     {
         try
         {
+            System.setProperty(JAVA_LIBRARY_PATH_KEY, SDRPLAY_API_PATH_WINDOWS + File.pathSeparator + System.getProperty(JAVA_LIBRARY_PATH_KEY));
             System.loadLibrary(SDRPLAY_API_LIBRARY_NAME);
             mLog.info("SDRPlay API library loaded");
             return true;
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             String name = System.mapLibraryName(SDRPLAY_API_LIBRARY_NAME);
             mLog.warn("SDRPlay API library not found/installed on this system.  Ensure the API is installed and " +
                     "the 'java.library.path' JVM property contains path to the library file [" + name + "].  Current " +
-                    "property contents: " + System.getProperty("java.library.path"));
+                    "property contents: " + System.getProperty(JAVA_LIBRARY_PATH_KEY));
         }
 
         return false;
@@ -112,9 +129,10 @@ public class SDRplay
 
     private void loadDevices()
     {
-        SegmentAllocator allocator = SegmentAllocator.ofScope(mResourceScope);
-        MemorySegment devicesArray = sdrplay_api_DeviceT.allocateArray(sdrplay_api_h.SDRPLAY_MAX_DEVICES(), allocator);
-        MemorySegment deviceCount = allocator.allocate(CLinker.C_INT, 0);
+        //Get a version-correct array of DeviceT structures
+        MemorySegment devicesArray = DeviceFactory.createForeignDeviceArray(getAPIVersion(), mSegmentAllocator);
+
+        MemorySegment deviceCount = mSegmentAllocator.allocate(CLinker.C_INT, 0);
 
         Status status = Status.fromValue(sdrplay_api_h.sdrplay_api_GetDevices(devicesArray, deviceCount,
                 sdrplay_api_h.SDRPLAY_MAX_DEVICES()));
@@ -122,12 +140,8 @@ public class SDRplay
         if(status.success())
         {
             int count = MemoryAccess.getInt(deviceCount);
-            devicesArray.elements(sdrplay_api_DeviceT.$LAYOUT()).limit(count).forEach(memorySegment ->
-            {
-
-                mDevices.add(DeviceFactory.create(SDRplay.this, memorySegment));
-            });
-
+            mDevices.clear();
+            mDevices.addAll(DeviceFactory.parseDevices(getAPIVersion(), SDRplay.this, devicesArray, count));
             mLog.info("Loaded Device Count: " + mDevices.size());
         }
         else
@@ -150,6 +164,7 @@ public class SDRplay
 
     /**
      * Selects the device for exclusive use.  This method is invoked by the device instance.
+     *
      * @param device to select
      * @param memorySegment of the device in foreign memory
      * @throws SDRplayException if the device argument was not created by this API instance or if unable to lock or
@@ -173,6 +188,7 @@ public class SDRplay
 
     /**
      * Releases the device from exclusive use.  This method is invoked by the device instance.
+     *
      * @param device to release
      * @param memorySegment of the device in foreign memory
      * @throws SDRplayException if the device argument was not created by this API instance or if unable to release
@@ -192,6 +208,7 @@ public class SDRplay
     /**
      * Retrieves the initial composite parameters for each device.  This should only be invoked once, on
      * startup, for each device.  Changes made to the device parameters should invoke update() method to apply changes.
+     *
      * @param device to load parameters
      * @param deviceHandle to device
      * @return constructed device composite paramaters
@@ -226,6 +243,7 @@ public class SDRplay
 
     /**
      * Initializes a device for use.
+     *
      * @param device to initialize
      * @param deviceHandle to the device
      * @param callbackFunctions to receive stream data from A and (optionally) B channels and events.
@@ -244,6 +262,7 @@ public class SDRplay
 
     /**
      * Un-Initializes a device from use.
+     *
      * @param device to un-initialize
      * @param deviceHandle to the device
      * @throws SDRplayException if error during uninit or if device is not selected
@@ -262,14 +281,15 @@ public class SDRplay
     /**
      * Applies updates made to the device parameters.  The device parameter that was updated is specified in the
      * update reason.
+     *
      * @param device to update
      * @param deviceHandle for the device
      * @param tunerSelect identifies which tuner to apply the updates
      * @param updateReasons identifying what was updated
      * @throws SDRplayException if the device is not selected, or if unable to update the device parameters
      */
-    public void update(Device device, MemoryAddress deviceHandle, TunerSelect tunerSelect, UpdateReason ... updateReasons)
-                throws SDRplayException
+    public void update(Device device, MemoryAddress deviceHandle, TunerSelect tunerSelect, UpdateReason... updateReasons)
+            throws SDRplayException
     {
         checkValidDevice(device);
 
@@ -287,6 +307,7 @@ public class SDRplay
 
     /**
      * Retrieve error information for the last error for the specified device.
+     *
      * @param device to check
      * @param deviceSegment for the device
      * @return error information
@@ -300,6 +321,7 @@ public class SDRplay
 
     /**
      * Sets the debug level logging for the specified device
+     *
      * @param device to set debug level on
      * @param deviceHandle for the device
      * @param debugLevel to set
@@ -309,7 +331,19 @@ public class SDRplay
     {
         checkValidDevice(device);
 
-        Status status = Status.fromValue(sdrplay_api_h.sdrplay_api_DebugEnable(deviceHandle, debugLevel.getValue()));
+        Status status = Status.UNKNOWN;
+
+        if(getAPIVersion() == Version.V3_07)
+        {
+            //V3.07 used a debug level argument
+            status = Status.fromValue(sdrplay_api_h.sdrplay_api_DebugEnable(deviceHandle, debugLevel.getValue()));
+        }
+        else if(getAPIVersion().gte(Version.V3_08))
+        {
+            //V3.08+ uses a 0:1 flag to enable debug logging.  The method signature didn't change -- still takes an integer
+            boolean enable = debugLevel != DebugLevel.DISABLE;
+            status = Status.fromValue(sdrplay_api_h.sdrplay_api_DebugEnable(deviceHandle, Flag.of(enable)));
+        }
 
         if(status.fail())
         {
@@ -319,6 +353,7 @@ public class SDRplay
 
     /**
      * Checks that the device was constructed by this API instance and continues to be a usable device.
+     *
      * @param device to check
      */
     private void checkValidDevice(Device device) throws SDRplayException
@@ -365,6 +400,7 @@ public class SDRplay
      * Identifies the API version.
      * Note: if the library is not found or loaded, or if the API version is not a supported version, this method
      * returns UNKNOWN
+     *
      * @return version.
      * @throws SDRplayException if unable to get the API version.
      */
@@ -411,6 +447,7 @@ public class SDRplay
 
     /**
      * Unlocks the device from exclusive access.
+     *
      * @throws SDRplayException if unable to unlock the Device API
      */
     private void unlockDeviceApi() throws SDRplayException
@@ -432,7 +469,7 @@ public class SDRplay
 
     public static void main(String[] args)
     {
-        LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();
         encoder.setContext(loggerContext);
         encoder.setPattern("%-25(%d{yyyyMMdd HHmmss.SSS} [%thread]) %-5level %logger{30} - %msg");
@@ -444,7 +481,7 @@ public class SDRplay
 
         List<Device> devices = sdrplay.getDevices();
 
-        for(Device device: devices)
+        for(Device device : devices)
         {
             try
             {

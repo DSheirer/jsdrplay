@@ -1,6 +1,6 @@
 package io.github.dsheirer.sdrplay.parameter.control;
 
-import io.github.dsheirer.sdrplay.api.sdrplay_api_h;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_h;
 
 /**
  * Automatic Gain Control (AGC) Control (mode)

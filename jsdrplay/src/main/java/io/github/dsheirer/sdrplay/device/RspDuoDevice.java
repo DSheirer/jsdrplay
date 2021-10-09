@@ -1,9 +1,10 @@
 package io.github.dsheirer.sdrplay.device;
 
 import io.github.dsheirer.sdrplay.SDRplayException;
+import io.github.dsheirer.sdrplay.Version;
 import io.github.dsheirer.sdrplay.parameter.composite.RspDuoCompositeParameters;
 import io.github.dsheirer.sdrplay.SDRplay;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_DeviceT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
 import jdk.incubator.foreign.MemorySegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,12 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
      * Constructs an SDRPlay RSPduo device from the foreign memory segment
      *
      * @param sdrPlay api instance that created this device
-     * @param memorySegment
+     * @param version of the api
+     * @param deviceStruct parser
      */
-    RspDuoDevice(SDRplay sdrPlay, MemorySegment memorySegment)
+    RspDuoDevice(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
     {
-        super(sdrPlay, memorySegment, DeviceType.RSPduo);
+        super(sdrPlay, version, deviceStruct);
 
         //Auto-set the tuner to dual tuner mode.
         if(getRspDuoMode() == RspDuoMode.UNKNOWN)
@@ -108,7 +110,7 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
      */
     public RspDuoMode getRspDuoMode()
     {
-        return RspDuoMode.fromValue(sdrplay_api_DeviceT.rspDuoMode$get(getDeviceMemorySegment()));
+        return getDeviceStruct().getRspDuoMode();
     }
 
     /**
@@ -123,7 +125,7 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
         }
         else
         {
-            sdrplay_api_DeviceT.rspDuoMode$set(getDeviceMemorySegment(), mode.getValue());
+            getDeviceStruct().setRspDuoMode(mode);
         }
     }
 
@@ -138,9 +140,9 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
     /**
      * Sets the sample rate for master/slave mode
      */
-    public void setRspDuoSampleFrequency(double sampleFrequency)
+    public void setRspDuoSampleFrequency(double frequency)
     {
-        sdrplay_api_DeviceT.rspDuoSampleFreq$set(getDeviceMemorySegment(), sampleFrequency);
+        getDeviceStruct().setRspDuoSampleFrequency(frequency);
     }
 
     @Override

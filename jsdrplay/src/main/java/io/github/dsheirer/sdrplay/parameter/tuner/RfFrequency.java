@@ -2,7 +2,7 @@ package io.github.dsheirer.sdrplay.parameter.tuner;
 
 import io.github.dsheirer.sdrplay.util.Flag;
 import io.github.dsheirer.sdrplay.SDRplayException;
-import io.github.dsheirer.sdrplay.api.sdrplay_api_RfFreqT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_RfFreqT;
 import jdk.incubator.foreign.MemorySegment;
 
 /**

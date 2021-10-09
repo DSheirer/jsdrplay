@@ -5,7 +5,8 @@ package io.github.dsheirer.sdrplay;
  */
 public enum Version
 {
-    V3_00(3.0f, false),
+    UNKNOWN(0.0f, false),
+    V3_00(3.00f, false),
     V3_01(3.01f, false),
     V3_02(3.02f, false),
     V3_03(3.03f, false),
@@ -13,8 +14,7 @@ public enum Version
     V3_05(3.05f, false),
     V3_06(3.06f, false),
     V3_07(3.07f, true),
-    V3_08(3.08f, false),
-    UNKNOWN(0.0f, false);
+    V3_08(3.08f, true);
 
     private float mValue;
     private boolean mSupported;
@@ -31,6 +31,16 @@ public enum Version
     public boolean isSupported()
     {
         return mSupported;
+    }
+
+    /**
+     * Indicates if this version is greater than or equal to the specified version.
+     * @param version to compare
+     * @return true if this version is greater than or equal to
+     */
+    public boolean gte(Version version)
+    {
+        return this.ordinal() >= version.ordinal();
     }
 
     /**
