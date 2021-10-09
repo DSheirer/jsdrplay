@@ -9,6 +9,10 @@ repositories {
     mavenCentral()
 }
 
+var incubatorArguments = ["--enable-native-access=ALL-UNNAMED,sdrplay.api,io.github.dsheirer.sdrplay",
+                          "--add-modules", "jdk.incubator.foreign","-Djava.library.path=/usr/local/lib"]
+tasks.withType(Test) { jvmArgs += incubatorArguments }
+
 dependencies {
     implementation project(':sdrplay-api')
     implementation 'ch.qos.logback:logback-classic:1.3.0-alpha10'
