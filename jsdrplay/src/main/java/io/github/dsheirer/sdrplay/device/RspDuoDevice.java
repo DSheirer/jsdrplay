@@ -125,8 +125,7 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
         }
         else
         {
-            //TODO: add this to the api
-            sdrplay_api_DeviceT.rspDuoMode$set(getDeviceMemorySegment(), mode.getValue());
+            getDeviceStruct().setRspDuoMode(mode);
         }
     }
 
@@ -141,9 +140,9 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
     /**
      * Sets the sample rate for master/slave mode
      */
-    public void setRspDuoSampleFrequency(double sampleFrequency)
+    public void setRspDuoSampleFrequency(double frequency)
     {
-        sdrplay_api_DeviceT.rspDuoSampleFreq$set(getDeviceMemorySegment(), sampleFrequency);
+        getDeviceStruct().setRspDuoSampleFrequency(frequency);
     }
 
     @Override

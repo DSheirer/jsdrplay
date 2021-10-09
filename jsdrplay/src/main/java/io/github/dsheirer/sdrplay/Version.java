@@ -6,7 +6,7 @@ package io.github.dsheirer.sdrplay;
 public enum Version
 {
     UNKNOWN(0.0f, false),
-    V3_00(3.0f, false),
+    V3_00(3.00f, false),
     V3_01(3.01f, false),
     V3_02(3.02f, false),
     V3_03(3.03f, false),

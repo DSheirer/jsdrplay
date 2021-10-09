@@ -35,6 +35,15 @@ public class DeviceFactory
         throw new IllegalArgumentException("Unrecognized version: " + version);
     }
 
+    /**
+     * Parses individual device memory segments from the devices array and creates Device instances for each
+     * RSP model detected.
+     * @param version of the API being used
+     * @param sdrplay instance
+     * @param devicesArray foreign memory segment
+     * @param count of devices contained in the foreign memory segment devices array
+     * @return zero or more RSP devices
+     */
     public static List<Device> parseDevices(Version version, SDRplay sdrplay, MemorySegment devicesArray, int count)
     {
         List<Device> devices = new ArrayList<>();
@@ -97,7 +106,7 @@ public class DeviceFactory
     }
 
     /**
-     * Creates a device structure parser for the specified version
+     * Creates a device structure parser for the specified API version
      * @param version to create
      * @param deviceMemorySegment
      * @return
@@ -116,16 +125,5 @@ public class DeviceFactory
         {
             throw new IllegalArgumentException("Unsupported version: " + version);
         }
-    }
-
-    /**
-     * Identifies the sdrplay device type
-     *
-     * @param deviceMemorySegment for the device foreign memory segment
-     */
-    private static DeviceType getDeviceType(MemorySegment deviceMemorySegment)
-    {
-        //Mask the byte value with 0xFF to get an unsigned byte value
-        return DeviceType.fromValue(0xFF & sdrplay_api_DeviceT.hwVer$get(deviceMemorySegment));
     }
 }

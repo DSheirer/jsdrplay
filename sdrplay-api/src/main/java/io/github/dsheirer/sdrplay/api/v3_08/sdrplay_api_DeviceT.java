@@ -84,10 +84,9 @@ public class sdrplay_api_DeviceT
     public static void rspDuoMode$set(MemorySegment seg, long index, int x) {
         sdrplay_api_DeviceT.rspDuoMode$VH.set(seg.asSlice(index*sizeof()), x);
     }
-
     static final VarHandle valid$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("valid"));
     public static VarHandle valid$VH() {
-        return sdrplay_api_DeviceT.valid$VH();
+        return sdrplay_api_DeviceT.valid$VH;
     }
     public static byte valid$get(MemorySegment seg) {
         return (byte)sdrplay_api_DeviceT.valid$VH.get(seg);
@@ -101,7 +100,6 @@ public class sdrplay_api_DeviceT
     public static void valid$set(MemorySegment seg, long index, byte x) {
         sdrplay_api_DeviceT.valid$VH.set(seg.asSlice(index*sizeof()), x);
     }
-
     static final VarHandle rspDuoSampleFreq$VH = $struct$LAYOUT.varHandle(double.class, MemoryLayout.PathElement.groupElement("rspDuoSampleFreq"));
     public static VarHandle rspDuoSampleFreq$VH() {
         return sdrplay_api_DeviceT.rspDuoSampleFreq$VH;
