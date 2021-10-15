@@ -2,6 +2,7 @@ package io.github.dsheirer.sdrplay.callback;
 
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_StreamCallback_t;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_StreamCbParamsT;
+import io.github.dsheirer.sdrplay.device.TunerSelect;
 import io.github.dsheirer.sdrplay.util.Flag;
 import jdk.incubator.foreign.CLinker;
 import jdk.incubator.foreign.MemoryAccess;
@@ -17,26 +18,37 @@ public class StreamCallbackAdapter implements sdrplay_api_StreamCallback_t
 {
     private ResourceScope mResourceScope;
     private IStreamListener mStreamListener;
+    private TunerSelect mTunerSelect;
+    private IStreamCallbackListener mStreamCallbackListener;
 
     /**
      * Constructs an instance of the callback implementation
      * @param resourceScope for defining new foreign memory segments
      * @param streamListener to receive transferred I/Q samples and event details
+     * @param tunerSelect identifies the tuner for this adapter
+     * @param listener to receive callback parameters
      */
-    public StreamCallbackAdapter(ResourceScope resourceScope, IStreamListener streamListener)
+    public StreamCallbackAdapter(ResourceScope resourceScope, IStreamListener streamListener,
+                                 TunerSelect tunerSelect, IStreamCallbackListener listener)
     {
         if(resourceScope == null)
         {
             throw new IllegalArgumentException("Resource scope must be non-null");
         }
 
-        if(streamListener == null)
-        {
-            throw new IllegalArgumentException("Stream listener must be non-null");
-        }
-
         mResourceScope = resourceScope;
-        mStreamListener = streamListener;
+        mTunerSelect = tunerSelect;
+        mStreamCallbackListener = listener;
+        setListener(streamListener);
+    }
+
+    /**
+     * Updates the listener for receiving samples
+     * @param listener to receive stream samples
+     */
+    public void setListener(IStreamListener listener)
+    {
+        mStreamListener = listener;
     }
 
     /**
@@ -52,23 +64,34 @@ public class StreamCallbackAdapter implements sdrplay_api_StreamCallback_t
     public void apply(MemoryAddress iSamplesPointer, MemoryAddress qSamplesPointer, MemoryAddress parametersPointer,
                       int sampleCount, int reset, MemoryAddress deviceContext)
     {
-        MemorySegment iSegment = iSamplesPointer.asSegment(CLinker.C_SHORT.byteSize() * sampleCount, mResourceScope);
-        MemorySegment qSegment = qSamplesPointer.asSegment(CLinker.C_SHORT.byteSize() * sampleCount, mResourceScope);
-
-        //Copy the I/Q samples from foreign memory to native java arrays
-        short[] i = new short[sampleCount];
-        short[] q = new short[sampleCount];
-
-        for(int x = 0; x < sampleCount; x++)
+        if(mStreamListener != null || mStreamCallbackListener != null)
         {
-            i[x] = MemoryAccess.getShortAtIndex(iSegment, x);
-            q[x] = MemoryAccess.getShortAtIndex(qSegment, x);
+            //Translate the callback parameters pointer to a memory segment and re-construct the parameters as a Java object
+            StreamCallbackParameters parameters = new StreamCallbackParameters(parametersPointer
+                    .asSegment(sdrplay_api_StreamCbParamsT.sizeof(), mResourceScope));
+
+            if(mStreamCallbackListener != null)
+            {
+                mStreamCallbackListener.process(mTunerSelect, parameters, reset);
+            }
+
+            if(mStreamListener != null)
+            {
+                MemorySegment iSegment = iSamplesPointer.asSegment(CLinker.C_SHORT.byteSize() * sampleCount, mResourceScope);
+                MemorySegment qSegment = qSamplesPointer.asSegment(CLinker.C_SHORT.byteSize() * sampleCount, mResourceScope);
+
+                //Copy the I/Q samples from foreign memory to native java arrays
+                short[] i = new short[sampleCount];
+                short[] q = new short[sampleCount];
+
+                for(int x = 0; x < sampleCount; x++)
+                {
+                    i[x] = MemoryAccess.getShortAtIndex(iSegment, x);
+                    q[x] = MemoryAccess.getShortAtIndex(qSegment, x);
+                }
+
+                mStreamListener.processStream(i, q, parameters, Flag.evaluate(reset));
+            }
         }
-
-        //Translate the callback parameters pointer to a memory segment and re-construct the parameters as a Java object
-        StreamCallbackParameters parameters = new StreamCallbackParameters(parametersPointer
-                .asSegment(sdrplay_api_StreamCbParamsT.sizeof(), mResourceScope));
-
-        mStreamListener.processStreamA(i, q, parameters, Flag.evaluate(reset), deviceContext);
     }
 }

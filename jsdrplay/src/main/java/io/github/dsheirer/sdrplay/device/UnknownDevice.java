@@ -15,16 +15,15 @@ public class UnknownDevice extends Device
      * Constructs an Unknown SDRPlay device from the foreign memory segment
      *
      * @param sdrPlay api instance that created this device
-     * @param version of the api
      * @param deviceStruct parser
      */
-    UnknownDevice(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
+    UnknownDevice(SDRplay sdrPlay, IDeviceStruct deviceStruct)
     {
-        super(sdrPlay, version, deviceStruct);
+        super(sdrPlay, deviceStruct);
     }
 
     @Override
-    public RspTuner getTuner1() throws SDRplayException
+    public RspTuner getTuner() throws SDRplayException
     {
         throw new SDRplayException("Unrecognized device type.  Cannot construct tuner");
     }

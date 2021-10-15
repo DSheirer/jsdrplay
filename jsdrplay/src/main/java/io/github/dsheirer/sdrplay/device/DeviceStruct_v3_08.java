@@ -79,7 +79,7 @@ public class DeviceStruct_v3_08 implements IDeviceStruct
     @Override
     public void setRspDuoSampleFrequency(double frequency)
     {
-        io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT.rspDuoSampleFreq$set(getDeviceMemorySegment(), frequency);
+        sdrplay_api_DeviceT.rspDuoSampleFreq$set(getDeviceMemorySegment(), frequency);
     }
 
     @Override public MemoryAddress getDeviceHandle()

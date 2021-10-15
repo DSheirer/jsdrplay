@@ -146,6 +146,11 @@ public enum GainReduction
     public static int MAX_GAIN_INDEX = 28;
 
     /**
+     * Number of discrete gain steps available for each entry
+     */
+    public static int GAIN_STEPS_AVAILABLE = 29;
+
+    /**
      * RSP1 Gain Reduction Tables
      */
     public static EnumSet<GainReduction> RSP_1_GAINS = EnumSet.range(RSP1_BAND_0_12, RSP1_BAND_1000_2000);

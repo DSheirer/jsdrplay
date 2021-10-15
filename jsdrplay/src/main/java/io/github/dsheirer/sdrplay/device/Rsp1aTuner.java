@@ -30,7 +30,7 @@ public class Rsp1aTuner extends RspTuner<Rsp1aDeviceParameters, Rsp1aTunerParame
     /**
      * Indicates if the RF notch is enabled
      */
-    public boolean isRFNotch()
+    public boolean isRfNotch()
     {
         return getDeviceParameters().isRFNotch();
     }
@@ -40,7 +40,7 @@ public class Rsp1aTuner extends RspTuner<Rsp1aDeviceParameters, Rsp1aTunerParame
      * @param enable setting
      * @throws SDRplayException if there is an error
      */
-    public void setRFNotch(boolean enable) throws SDRplayException
+    public void setRfNotch(boolean enable) throws SDRplayException
     {
         getDeviceParameters().setRFNotch(enable);
         update(UpdateReason.RSP1A_RF_NOTCH_CONTROL);

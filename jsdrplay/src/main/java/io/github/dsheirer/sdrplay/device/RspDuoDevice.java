@@ -1,91 +1,63 @@
 package io.github.dsheirer.sdrplay.device;
 
 import io.github.dsheirer.sdrplay.SDRplayException;
-import io.github.dsheirer.sdrplay.Version;
+import io.github.dsheirer.sdrplay.UpdateReason;
 import io.github.dsheirer.sdrplay.parameter.composite.RspDuoCompositeParameters;
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
-import jdk.incubator.foreign.MemorySegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * RSPduo Device
  */
-public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1>
+public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner>
 {
     private static final Logger mLog = LoggerFactory.getLogger(RspDuoDevice.class);
 
-    private RspDuoTuner1 mTuner1;
-    private RspDuoTuner2 mTuner2;
+    private RspDuoTuner mTuner;
 
     /**
      * Constructs an SDRPlay RSPduo device from the foreign memory segment
      *
      * @param sdrPlay api instance that created this device
-     * @param version of the api
      * @param deviceStruct parser
      */
-    RspDuoDevice(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
+    RspDuoDevice(SDRplay sdrPlay, IDeviceStruct deviceStruct)
     {
-        super(sdrPlay, version, deviceStruct);
-
-        //Auto-set the tuner to dual tuner mode.
-        if(getRspDuoMode() == RspDuoMode.UNKNOWN)
-        {
-            setRspDuoMode(RspDuoMode.DUAL_TUNER);
-            setTunerSelect(TunerSelect.TUNER_1);
-        }
+        super(sdrPlay, deviceStruct);
     }
 
     /**
-     * Tuner 1
-     * @return tuner 1
+     * Tuner
+     * @return tuner
      * @throws SDRplayException if there is an error
      */
     @Override
-    public RspDuoTuner1 getTuner1() throws SDRplayException
+    public RspDuoTuner getTuner() throws SDRplayException
     {
         if(!isSelected())
         {
             throw new SDRplayException("Device must be selected before accessing the tuner");
         }
 
-        if(mTuner1 == null)
+        if(mTuner == null)
         {
-            mTuner1 = new RspDuoTuner1(RspDuoDevice.this, getAPI(),
-                    getCompositeParameters().getDeviceParameters(), getCompositeParameters().getTunerParameters1(),
-                    getCompositeParameters().getControlParameters1());
+            if(getTunerSelect().equals(TunerSelect.TUNER_1))
+            {
+                mTuner = new RspDuoTuner1(RspDuoDevice.this, getAPI(),
+                        getCompositeParameters().getDeviceParameters(), getCompositeParameters().getTunerAParameters(),
+                        getCompositeParameters().getControlAParameters());
+            }
+            else
+            {
+                mTuner = new RspDuoTuner2(RspDuoDevice.this, getAPI(),
+                        getCompositeParameters().getDeviceParameters(), getCompositeParameters().getTunerBParameters(),
+                        getCompositeParameters().getControlBParameters());
+            }
         }
 
-        return mTuner1;
-    }
-
-    /**
-     * Tuner 2
-     * @return tuner 2
-     * @throws SDRplayException if there is an error or if RSPduo mode is not set to RspDuoMode.DUAL_TUNER
-     */
-    public RspDuoTuner2 getTuner2() throws SDRplayException
-    {
-        if(!isSelected())
-        {
-            throw new SDRplayException("Device must be selected before accessing the tuner");
-        }
-
-        if(getRspDuoMode() != RspDuoMode.DUAL_TUNER)
-        {
-            throw new SDRplayException("Set RSPduo mode to RspDuoMode.DUAL_TUNER before accessing this second tuner");
-        }
-
-        if(mTuner2 == null)
-        {
-            mTuner2 = new RspDuoTuner2(RspDuoDevice.this, getAPI(),
-                    getCompositeParameters().getDeviceParameters(), getCompositeParameters().getTunerParameters2(),
-                    getCompositeParameters().getControlParameters2());
-        }
-
-        return mTuner2;
+        return mTuner;
     }
 
     /**
@@ -114,19 +86,19 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
     }
 
     /**
-     * Sets RSPduo mode.  Note this must be set before accessing tuner 1 or 2.  Attempts to change the mode after any
-     * tuner has been accessed will be ignored.
+     * Sets RSPduo mode.  Note this must be set before selecting the device for use.
+     * @param mode to set
+     * @throws SDRplayException if the device has already been selected
      */
-    public void setRspDuoMode(RspDuoMode mode)
+    public void setRspDuoMode(RspDuoMode mode) throws SDRplayException
     {
-        if(mTuner1 != null || mTuner2 != null)
+        if(isSelected())
         {
-            mLog.warn("Attempt to change RSPduo mode [" + mode + "] ignored.  Tuner 1 or 2 has already been accessed");
+            throw new SDRplayException("RSPduo device is already selected.  Mode can only be set/changed before the " +
+                    "device is selected for use.");
         }
-        else
-        {
-            getDeviceStruct().setRspDuoMode(mode);
-        }
+
+        getDeviceStruct().setRspDuoMode(mode);
     }
 
     /**
@@ -134,16 +106,56 @@ public class RspDuoDevice extends Device<RspDuoCompositeParameters, RspDuoTuner1
      */
     public double getRspDuoSampleFrequency()
     {
-        return sdrplay_api_DeviceT.rspDuoSampleFreq$get(getDeviceMemorySegment());
+        return getDeviceStruct().getRspDuoSampleFrequency();
     }
 
     /**
-     * Sets the sample rate for master/slave mode
+     * Sets the sample rate when the device is configured for master mode.
+     * @param frequency
      */
-    public void setRspDuoSampleFrequency(double frequency)
+    public void setRspDuoSampleFrequency(double frequency) throws SDRplayException
     {
+        if(!getRspDuoMode().equals(RspDuoMode.MASTER))
+        {
+            throw new SDRplayException("This method can only be used to set the overall sample rate when the RSPduo " +
+                    "device is configured for master mode.");
+        }
+
         getDeviceStruct().setRspDuoSampleFrequency(frequency);
     }
+
+    /**
+     * Sets the decimation factor for the final sample rate.
+     * @param decimation as an integer multiple of two (e.g. 1, 2, 4, 8)
+     * @throws SDRplayException if there is an error while setting decimation
+     */
+    @Override
+    public void setDecimation(int decimation) throws SDRplayException
+    {
+        if((decimation < 1) || ((decimation != 1) && (decimation % 2 != 0)))
+        {
+            throw new IllegalArgumentException("Invalid decimation rate [" + decimation + "] - must be a positive integer multiple of 2.");
+        }
+
+        if(getTunerSelect() == TunerSelect.TUNER_1)
+        {
+            getCompositeParameters().getControlAParameters().getDecimation().setDecimationFactor(decimation);
+            getCompositeParameters().getControlAParameters().getDecimation().setEnabled(decimation != 1);
+            update(getTunerSelect(), UpdateReason.CONTROL_DECIMATION);
+        }
+        else if(getTunerSelect() == TunerSelect.TUNER_2)
+        {
+            getCompositeParameters().getControlBParameters().getDecimation().setDecimationFactor(decimation);
+            getCompositeParameters().getControlBParameters().getDecimation().setEnabled(decimation != 1);
+            update(getTunerSelect(), UpdateReason.CONTROL_DECIMATION);
+        }
+        else if(getTunerSelect() == TunerSelect.TUNER_BOTH)
+        {
+            //Dual-synchronized tuner mode ... let the parent Device class set the value
+            super.setDecimation(decimation);
+        }
+    }
+
 
     @Override
     public String toString()

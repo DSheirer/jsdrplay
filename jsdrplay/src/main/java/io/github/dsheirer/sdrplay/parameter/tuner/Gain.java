@@ -3,12 +3,16 @@ package io.github.dsheirer.sdrplay.parameter.tuner;
 import io.github.dsheirer.sdrplay.util.Flag;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_GainT;
 import jdk.incubator.foreign.MemorySegment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Gain structure (sdrplay_api_GainT)
  */
 public class Gain
 {
+    private static final Logger mLog = LoggerFactory.getLogger(Gain.class);
+
     private MemorySegment mMemorySegment;
     private GainValues mGainValues;
 
@@ -36,8 +40,18 @@ public class Gain
      */
     public void setGain(GainReduction gainReduction, int index)
     {
-        setLNA(gainReduction.getLnaState(index));
-        setGainReductionDb(gainReduction.getGainReduction(index));
+
+        mLog.info("Setting Gain - LNA:" + gainReduction.getLnaState(index) +
+                " Gain Reduction DB:" + gainReduction.getGainReduction(index) +
+                " Current LNA:" + getLNA() + " Current GRDB:" + getGainReductionDb());
+        mLog.info("Gain Values: " + getGainValues());
+//        setLNA(gainReduction.getLnaState(index));
+//        setGainReductionDb(gainReduction.getGainReduction(index));
+
+        //TODO: remove after testing
+        setLNA(5);
+        setGainReductionDb(59);
+
         setSynchronousUpdate(true);
     }
 

@@ -1,11 +1,13 @@
 package io.github.dsheirer.sdrplay.parameter.tuner;
 
+import java.util.EnumSet;
+
 /**
  * RSP Frequency Bands
  */
 public enum FrequencyBand
 {
-    BAND_0_12(0, 12_000_000, "0-12 MHz"),
+    BAND_0_12(1_000, 12_000_000, "0.001-12 MHz"),
     BAND_12_60(12_000_000, 60_000_000, "12-60 MHz"),
     BAND_60_250(60_000_000, 250_000_000, "60-250 MHz"),
     BAND_250_420(250_000_000, 420_000_000, "250-420 MHz"),
@@ -23,6 +25,11 @@ public enum FrequencyBand
         mMaximum = max;
         mDescription = description;
     }
+
+    /**
+     * Valid frequency bands
+     */
+    public static EnumSet<FrequencyBand> VALID_FREQUENCY_BANDS = EnumSet.range(BAND_0_12, BAND_1000_2000);
 
     /**
      * Minimum frequency

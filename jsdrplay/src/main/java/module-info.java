@@ -9,9 +9,11 @@ module io.github.dsheirer.sdrplay {
     exports io.github.dsheirer.sdrplay.error;
     exports io.github.dsheirer.sdrplay.parameter.event;
     exports io.github.dsheirer.sdrplay.util;
+    exports io.github.dsheirer.sdrplay.async;
 
     requires ch.qos.logback.classic;
     requires jdk.incubator.foreign;
+    requires org.apache.commons.lang3;
     requires org.slf4j;
     requires sdrplay.api;
 }

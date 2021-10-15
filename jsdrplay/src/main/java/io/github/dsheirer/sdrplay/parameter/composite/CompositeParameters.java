@@ -23,8 +23,8 @@ import jdk.incubator.foreign.ResourceScope;
 public class CompositeParameters<D extends DeviceParameters, T extends TunerParameters>
 {
     private D mDeviceParameters;
-    private T mTunerParameters1;
-    private ControlParameters mControlParameters1;
+    private T mTunerAParameters;
+    private ControlParameters mControlAParameters;
 
     /**
      * Constructs an instance from the foreign memory segment
@@ -39,12 +39,12 @@ public class CompositeParameters<D extends DeviceParameters, T extends TunerPara
         MemorySegment parametersMemorySegment = memoryAddress.asSegment(sdrplay_api_DevParamsT.sizeof(), resourceScope);
         mDeviceParameters = (D) DeviceParametersFactory.create(deviceType, parametersMemorySegment);
 
-        MemoryAddress memoryAddressRx1 = sdrplay_api_DeviceParamsT.rxChannelA$get(memorySegment);
-        MemorySegment memorySegmentRx1 = memoryAddressRx1.asSegment(sdrplay_api_RxChannelParamsT.sizeof(), resourceScope);
-        mTunerParameters1 = (T) TunerParametersFactory.create(deviceType, memorySegmentRx1);
+        MemoryAddress memoryAddressRxA = sdrplay_api_DeviceParamsT.rxChannelA$get(memorySegment);
+        MemorySegment memorySegmentRxA = memoryAddressRxA.asSegment(sdrplay_api_RxChannelParamsT.sizeof(), resourceScope);
+        mTunerAParameters = (T) TunerParametersFactory.create(deviceType, memorySegmentRxA);
 
-        MemorySegment tuner1ControlParametersMemorySegment = sdrplay_api_RxChannelParamsT.ctrlParams$slice(memorySegmentRx1);
-        mControlParameters1 = new ControlParameters(tuner1ControlParametersMemorySegment);
+        MemorySegment tunerAControlParametersMemorySegment = sdrplay_api_RxChannelParamsT.ctrlParams$slice(memorySegmentRxA);
+        mControlAParameters = new ControlParameters(tunerAControlParametersMemorySegment);
     }
 
     /**
@@ -56,19 +56,25 @@ public class CompositeParameters<D extends DeviceParameters, T extends TunerPara
     }
 
     /**
-     * Tuner 1 Parameters
+     * Tuner A Parameters.
+     *
+     * Note: this is normally mapped to tuner 1.  In the RSPduo, this is mapped to Tuner 1 or Tuner 2, according to how
+     * the user has setup the TunerSelect.
      */
-    public T getTunerParameters1()
+    public T getTunerAParameters()
     {
-        return mTunerParameters1;
+        return mTunerAParameters;
     }
 
     /**
-     * Tuner 1 Control Parameters
+     * Tuner A Control Parameters
+     *
+     * Note: this is normally mapped to tuner 1.  In the RSPduo, this is mapped to Tuner 1 or Tuner 2, according to how
+     * the user has setup the TunerSelect.
      */
-    public ControlParameters getControlParameters1()
+    public ControlParameters getControlAParameters()
     {
-        return mControlParameters1;
+        return mControlAParameters;
     }
 
     @Override
@@ -77,7 +83,7 @@ public class CompositeParameters<D extends DeviceParameters, T extends TunerPara
         StringBuilder sb = new StringBuilder();
         sb.append("Composite Parameters\n");
         sb.append("\tDevice Parameters:\n").append(getDeviceParameters()).append("\n");
-        sb.append("\tTuner 1 Parameters:\n").append(getTunerParameters1()).append("\n");
+        sb.append("\tTuner A Parameters:\n").append(getTunerAParameters()).append("\n");
         return sb.toString();
     }
 }

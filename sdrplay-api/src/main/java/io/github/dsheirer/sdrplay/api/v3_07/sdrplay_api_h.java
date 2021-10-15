@@ -10,8 +10,9 @@ public class sdrplay_api_h  {
 
     static
     {
-        System.out.println("Library Path: " + System.getProperty("java.library.path"));
-        System.loadLibrary("sdrplay_api");
+        //TODO: Move the library loading to the SDRplay class
+//        System.out.println("Library Path: " + System.getProperty("java.library.path"));
+//        System.loadLibrary("sdrplay_api");
     }
 
     static final SymbolLookup LIBRARIES = RuntimeHelper.lookup();    /* package-private */ sdrplay_api_h() {}

@@ -56,4 +56,10 @@ public class SamplingFrequency
     {
         setSampleRate(sampleRate, false, false);
     }
+
+    @Override
+    public String toString()
+    {
+        return "Sample Rate:" + getSampleRate();
+    }
 }
