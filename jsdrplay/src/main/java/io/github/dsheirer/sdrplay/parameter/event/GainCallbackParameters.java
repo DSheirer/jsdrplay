@@ -2,12 +2,15 @@ package io.github.dsheirer.sdrplay.parameter.event;
 
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_GainCbParamT;
 import jdk.incubator.foreign.MemorySegment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Gain Callback Parameters structure (sdrplay_api_GainCbParamT)
  */
 public class GainCallbackParameters
 {
+    private static final Logger mLog = LoggerFactory.getLogger(GainCallbackParameters.class);
     private int mGainReductionDb;
     private int mLnaGainReductionDb;
     private double mCurrentGain;
@@ -44,5 +47,15 @@ public class GainCallbackParameters
     public double getCurrentGain()
     {
         return mCurrentGain;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GR:").append(getGainReductionDb());
+        sb.append(" LNA:").append(getLnaGainReductionDb());
+        sb.append(" CURRENT GAIN:").append(getCurrentGain());
+        return sb.toString();
     }
 }

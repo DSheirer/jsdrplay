@@ -1,8 +1,8 @@
 package io.github.dsheirer.sdrplay.parameter.tuner;
 
-import io.github.dsheirer.sdrplay.util.Flag;
 import io.github.dsheirer.sdrplay.SDRplayException;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_RfFreqT;
+import io.github.dsheirer.sdrplay.util.Flag;
 import jdk.incubator.foreign.MemorySegment;
 
 /**
@@ -10,7 +10,7 @@ import jdk.incubator.foreign.MemorySegment;
  */
 public class RfFrequency
 {
-    private static final double MINIMUM_FREQUENCY = 0;
+    private static final double MINIMUM_FREQUENCY = 1_200;
     private static final double MAXIMUM_FREQUENCY = 2_000_000_000;
     private MemorySegment mMemorySegment;
 
@@ -64,6 +64,7 @@ public class RfFrequency
     {
         setFrequency(frequency, true);
     }
+
     @Override
     public String toString()
     {

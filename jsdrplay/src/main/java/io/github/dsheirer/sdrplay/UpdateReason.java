@@ -16,15 +16,19 @@ public enum UpdateReason
     DEVICE_PPM(sdrplay_api_h.sdrplay_api_Update_Dev_Ppm(), "PPM"),
     DEVICE_SYNC_UPDATE(sdrplay_api_h.sdrplay_api_Update_Dev_SyncUpdate(), "Sync Update"),
     DEVICE_RESET_FLAGS(sdrplay_api_h.sdrplay_api_Update_Dev_ResetFlags(), "Reset Flags"),
+
     RSP1A_BIAS_T_CONTROL(sdrplay_api_h.sdrplay_api_Update_Rsp1a_BiasTControl(), "RSP1A Bias-T Control"),
     RSP1A_RF_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_Rsp1a_RfNotchControl(), "RSP1A RF Notch Control"),
     RSP1A_RF_DAB_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_Rsp1a_RfDabNotchControl(), "RSP1A RF DAB Notch Control"),
+
     RSP2_BIAS_T_CONTROL(sdrplay_api_h.sdrplay_api_Update_Rsp2_BiasTControl(), "RSP2 Bias-T Control"),
     RSP2_AM_PORT_SELECT(sdrplay_api_h.sdrplay_api_Update_Rsp2_AmPortSelect(), "RSP2 AM Port Select"),
     RSP2_ANTENNA_CONTROL(sdrplay_api_h.sdrplay_api_Update_Rsp2_AntennaControl(), "RSP2 Antenna Control"),
     RSP2_RF_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_Rsp2_RfNotchControl(), "RSP2 RF Notch Control"),
     RSP2_EXT_REF_CONTROL(sdrplay_api_h.sdrplay_api_Update_Rsp2_ExtRefControl(), "RSP2 External Reference Control"),
+
     RSP_DUO_EXT_REF_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_ExtRefControl(), "RSPduo External Reference Control"),
+
     SPARE_1(sdrplay_api_h.sdrplay_api_Update_Master_Spare_1(), "Spare 1"),
     SPARE_2(sdrplay_api_h.sdrplay_api_Update_Master_Spare_2(), "Spare 2"),
 
@@ -36,13 +40,15 @@ public enum UpdateReason
     TUNER_IF_TYPE(sdrplay_api_h.sdrplay_api_Update_Tuner_IfType(), "Tuner IF Type"),
     TUNER_DC_OFFSET(sdrplay_api_h.sdrplay_api_Update_Tuner_DcOffset(), "Tuner DC Offset"),
     TUNER_LO_MODE(sdrplay_api_h.sdrplay_api_Update_Tuner_LoMode(), "Tuner LO Mode"),
+
     CONTROL_DC_OFFSET_IQ_IMBALANCE(sdrplay_api_h.sdrplay_api_Update_Ctrl_DCoffsetIQimbalance(), "Control DC Offset IQ Imbalance"),
     CONTROL_DECIMATION(sdrplay_api_h.sdrplay_api_Update_Ctrl_Decimation(), "Control Decimation"),
     CONTROL_AGC(sdrplay_api_h.sdrplay_api_Update_Ctrl_Agc(), "Control AGC"),
     CONTROL_ADSB_MODE(sdrplay_api_h.sdrplay_api_Update_Ctrl_AdsbMode(), "Control ADSB Mode"),
     CONTROL_OVERLOAD_MESSAGE_ACK(sdrplay_api_h.sdrplay_api_Update_Ctrl_OverloadMsgAck(), "Control Overload Message Ack"),
+
     RSP_DUO_BIAS_T_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_BiasTControl(), "RSPduo Bias-T Control"),
-    RSP_DUO_AM_PORT_SELECT(sdrplay_api_h.sdrplay_api_Update_RspDuo_AmPortSelect(), "RSPduo Bias-T Control"),
+    RSP_DUO_AM_PORT_SELECT(sdrplay_api_h.sdrplay_api_Update_RspDuo_AmPortSelect(), "RSPduo AM Port Select"),
     RSP_DUO_TUNER_1_AM_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_Tuner1AmNotchControl(), "RSPduo Tuner 1 AM Notch Control"),
     RSP_DUO_RF_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_RfNotchControl(), "RSPduo RF Notch Control"),
     RSP_DUO_RF_DAB_NOTCH_CONTROL(sdrplay_api_h.sdrplay_api_Update_RspDuo_RfDabNotchControl(), "RSPduo RF DAB Notch Control"),
@@ -70,6 +76,14 @@ public enum UpdateReason
 
     public static EnumSet<UpdateReason> EXTENSIONS = EnumSet.range(EXTENSION_RSP_DX_HDR_ENABLE, EXTENSION_NONE);
 
+
+    /**
+     * Many of the update reasons described in this enumeration are submitted asynchronously, since the API is
+     * non-blocking.  However, the device event listener responses are limited to just three events: Frequency, Gain,
+     * and Sample Rate.  This constant describes the three update reasons that correspond to the device events.
+     */
+    public static EnumSet<UpdateReason> ASYNC_UPDATE_RESPONSES = EnumSet.of(DEVICE_SAMPLE_RATE, TUNER_FREQUENCY_RF, TUNER_GAIN_REDUCTION);
+
     /**
      * Numeric value
      */
@@ -84,6 +98,14 @@ public enum UpdateReason
     public boolean isExtended()
     {
         return EXTENSIONS.contains(this);
+    }
+
+    /**
+     * Indicates if this update reason is one of the limited set of asynchronous update operation response types.
+     */
+    public boolean isAsyncUpdateResponse()
+    {
+        return ASYNC_UPDATE_RESPONSES.contains(this);
     }
 
     /**
@@ -119,7 +141,7 @@ public enum UpdateReason
         {
             if(!reason.isExtended())
             {
-                combined |= reason.getValue();
+                combined += reason.getValue();
             }
         }
 
@@ -141,7 +163,7 @@ public enum UpdateReason
         {
             if(reason.isExtended())
             {
-                combined |= reason.getValue();
+                combined += reason.getValue();
             }
         }
 

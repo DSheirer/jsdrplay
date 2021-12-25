@@ -1,7 +1,5 @@
 package io.github.dsheirer.sdrplay.device;
 
-import io.github.dsheirer.sdrplay.SDRplayException;
-import io.github.dsheirer.sdrplay.parameter.tuner.SampleRate;
 import jdk.incubator.foreign.MemoryAddress;
 import jdk.incubator.foreign.MemorySegment;
 
@@ -53,8 +51,7 @@ public interface IDeviceStruct
     double getRspDuoSampleFrequency();
 
     /**
-     * Sets the RSPduo sample frequency
-     * @param frequency to set
+     * Sets the sample frequency/rate for the RSPduo when in master (only) mode.
      */
     void setRspDuoSampleFrequency(double frequency);
 

@@ -16,5 +16,7 @@ dependencies {
 }
 
 test {
+    //Exclude all tests by default
+    exclude '**/*'
     useJUnitPlatform()
 }

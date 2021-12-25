@@ -1,7 +1,5 @@
 package io.github.dsheirer.sdrplay.callback;
 
-import jdk.incubator.foreign.MemoryAddress;
-
 /**
  * Stream Listener interface.
  */
@@ -13,8 +11,7 @@ public interface IStreamListener
      * @param xq array of Quadrature samples
      * @param streamCallbackParameters stream callback parameters
      * @param reset indicates if a re-initialization has occurred within the API and that local buffering should be reset
-     * @param context pointer used to initialize the device
      */
-    void processStreamA(short[] xi, short[] xq, StreamCallbackParameters streamCallbackParameters,
-                        boolean reset, MemoryAddress context);
+    void processStream(short[] xi, short[] xq, StreamCallbackParameters streamCallbackParameters,
+                       boolean reset);
 }

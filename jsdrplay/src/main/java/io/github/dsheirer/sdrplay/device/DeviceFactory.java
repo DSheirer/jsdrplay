@@ -1,5 +1,6 @@
 package io.github.dsheirer.sdrplay.device;
 
+import io.github.dsheirer.sdrplay.DeviceSelectionMode;
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.Version;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
@@ -53,14 +54,14 @@ public class DeviceFactory
             devicesArray.elements(io.github.dsheirer.sdrplay.api.v3_08.sdrplay_api_DeviceT.$LAYOUT())
                     .limit(count).forEach(memorySegment ->
             {
-                devices.add(DeviceFactory.createDevice(sdrplay, version, memorySegment));
+                devices.add(DeviceFactory.createDevice(sdrplay, memorySegment));
             });
         }
         else if(version == Version.V3_07)
         {
             devicesArray.elements(sdrplay_api_DeviceT.$LAYOUT()).limit(count).forEach(memorySegment ->
             {
-                devices.add(DeviceFactory.createDevice(sdrplay, version, memorySegment));
+                devices.add(DeviceFactory.createDevice(sdrplay, memorySegment));
             });
         }
         else
@@ -74,33 +75,32 @@ public class DeviceFactory
     /**
      * Creates an SDRplay device from the foreign memory Device instance.
      * @param sdrPlay for device callback support
-     * @param version of the api
      * @param deviceMemorySegment instance for the device
      * @return correctly typed device
      */
-    public static Device createDevice(SDRplay sdrPlay, Version version, MemorySegment deviceMemorySegment)
+    public static Device createDevice(SDRplay sdrPlay, MemorySegment deviceMemorySegment)
     {
-        IDeviceStruct deviceStruct = createDeviceStruct(version, deviceMemorySegment);
+        IDeviceStruct deviceStruct = createDeviceStruct(sdrPlay.getVersion(), deviceMemorySegment);
 
         switch(deviceStruct.getDeviceType())
         {
             case RSP1 -> {
-                return new Rsp1Device(sdrPlay, version, deviceStruct);
+                return new Rsp1Device(sdrPlay, deviceStruct);
             }
             case RSP1A -> {
-                return new Rsp1aDevice(sdrPlay, version, deviceStruct);
+                return new Rsp1aDevice(sdrPlay, deviceStruct);
             }
             case RSP2 -> {
-                return new Rsp2Device(sdrPlay, version, deviceStruct);
+                return new Rsp2Device(sdrPlay, deviceStruct);
             }
             case RSPduo -> {
-                return new RspDuoDevice(sdrPlay, version, deviceStruct);
+                return new RspDuoDevice(sdrPlay, deviceStruct);
             }
             case RSPdx -> {
-                return new RspDxDevice(sdrPlay, version, deviceStruct);
+                return new RspDxDevice(sdrPlay, deviceStruct);
             }
             default -> {
-                return new UnknownDevice(sdrPlay, version, deviceStruct);
+                return new UnknownDevice(sdrPlay, deviceStruct);
             }
         }
     }

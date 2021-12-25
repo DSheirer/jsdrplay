@@ -1,11 +1,14 @@
 package io.github.dsheirer.sdrplay.device;
 
+import io.github.dsheirer.sdrplay.async.AsyncUpdateFuture;
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.SDRplayException;
 import io.github.dsheirer.sdrplay.UpdateReason;
 import io.github.dsheirer.sdrplay.parameter.control.AgcMode;
 import io.github.dsheirer.sdrplay.parameter.control.ControlParameters;
 import io.github.dsheirer.sdrplay.parameter.device.DeviceParameters;
+import io.github.dsheirer.sdrplay.parameter.tuner.Bandwidth;
+import io.github.dsheirer.sdrplay.parameter.tuner.Gain;
 import io.github.dsheirer.sdrplay.parameter.tuner.GainReduction;
 import io.github.dsheirer.sdrplay.parameter.tuner.IfMode;
 import io.github.dsheirer.sdrplay.parameter.tuner.LoMode;
@@ -73,7 +76,8 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
     /**
      * Tuner parameters for the selected tuner
      */
-    protected T getTunerParameters()
+    //TODO: change back to protected
+    public T getTunerParameters()
     {
         return mTunerParameters;
     }
@@ -87,48 +91,49 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
     }
 
     /**
-     * Convenience method for notifying the API that parameters for the device have been updated
+     * Convenience method for notifying the API that parameters for the device have been updated, when the device is
+     * initialized.
      *
      * @param updateReasons indicating what has been updated
      * @throws SDRplayException if there is an error
      */
     protected void update(UpdateReason... updateReasons) throws SDRplayException
     {
-        mSDRplay.update(getDevice(), getDevice().getDeviceHandle(), getTunerSelect(), updateReasons);
+        getDevice().update(getTunerSelect(), updateReasons);
     }
 
     /**
-     * Current sample rate
-     */
-    public double getSampleRate()
-    {
-        return getDeviceParameters().getSamplingFrequency().getSampleRate();
-    }
-
-    /**
-     * Sets the specified sample rate
+     * Convenience method for notifying the device that a parameter for this tuner have been updated.
      *
-     * @param sampleRate to apply
-     * @throws SDRplayException if the device is not selected or available
+     * Note: the asynchronous device event responses are limited to Frequency, Gain and Sample Rate.  For example,
+     * if you update the RSPduo DAB Notch parameter, it will generate a Gain change notification, so we submit
+     * an async update for the DAB Notch, but anticipate a Gain update response.
+     *
+     * @param updateReason indicating what has been updated
+     * @param expectedResponse that will be received indicating that the async operation is completed.
      */
-    public void setSampleRate(SampleRate sampleRate) throws SDRplayException
+    protected AsyncUpdateFuture updateAsync(UpdateReason updateReason, UpdateReason expectedResponse)
     {
-        getDeviceParameters().getSamplingFrequency().setSampleRate(sampleRate);
+        return getDevice().updateAsync(getTunerSelect(), updateReason, expectedResponse);
+    }
 
-        getTunerParameters().setBandwidth(sampleRate.getBandwidth());
+    /**
+     * Current tuner bandwidth
+     */
+    public Bandwidth getBandwidth()
+    {
+        return getTunerParameters().getBandwidth();
+    }
 
-        if(sampleRate.hasDecimation())
-        {
-            getControlParameters().getDecimation().setEnabled(true);
-            getControlParameters().getDecimation().setWideBandSignal(true);
-            getControlParameters().getDecimation().setDecimationFactor(sampleRate.getDecimation());
-        }
-        else
-        {
-            getControlParameters().getDecimation().setEnabled(false);
-        }
-
-        update(UpdateReason.DEVICE_SAMPLE_RATE, UpdateReason.TUNER_BANDWIDTH_TYPE, UpdateReason.CONTROL_DECIMATION);
+    /**
+     * Sets tuner bandwidth
+     * @param bandwidth to apply
+     * @throws SDRplayException if there is an error
+     */
+    public void setBandwidth(Bandwidth bandwidth) throws SDRplayException
+    {
+        getTunerParameters().setBandwidth(bandwidth);
+        update(UpdateReason.TUNER_BANDWIDTH_TYPE);
     }
 
     /**
@@ -140,16 +145,31 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
     }
 
     /**
-     * Sets the center frequency for the tuner
+     * Requests to set the center frequency for the tuner asynchronously.
+     *
+     * Note: the API supports the notion of synchronous frequency updates, but in testing I found that you cannot
+     * submit a second frequency change update request until a previously submitted frequency change update
+     * operation had completed, otherwise it would generate a fail status.  Therefore, this is method is strictly
+     * an async operation.
      *
      * @param frequency in Hertz
-     * @throws SDRplayException if there is an error
+     * @return future that can be monitored for completion of the set frequency operation.
      */
-    public void setFrequency(long frequency) throws SDRplayException
+    public AsyncUpdateFuture setFrequency(long frequency)
     {
-        getTunerParameters().getRfFrequency().setFrequency(frequency);
-        update(UpdateReason.TUNER_FREQUENCY_RF);
-        updateGainReduction(frequency);
+        try
+        {
+            getTunerParameters().getRfFrequency().setFrequency(frequency, false);
+            updateGainReduction(frequency);
+            return updateAsync(UpdateReason.TUNER_FREQUENCY_RF, UpdateReason.TUNER_FREQUENCY_RF);
+        }
+        catch(SDRplayException se)
+        {
+            AsyncUpdateFuture future = new AsyncUpdateFuture(getTunerSelect(), UpdateReason.TUNER_FREQUENCY_RF,
+                    UpdateReason.TUNER_FREQUENCY_RF);
+            future.setError(se);
+            return future;
+        }
     }
 
     /**
@@ -202,6 +222,22 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
     }
 
     /**
+     * AGC Mode
+     */
+    public AgcMode getAGC()
+    {
+        return getControlParameters().getAgc().getAgcMode();
+    }
+
+    /**
+     * Gain for the tuner.
+     */
+    public Gain getGain()
+    {
+        return getTunerParameters().getGain();
+    }
+
+    /**
      * Enables or disables DC correction
      *
      * @param enable true or false
@@ -231,10 +267,13 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
      * @param ppm value
      * @throws SDRplayException
      */
-    public void setPPM(double ppm) throws SDRplayException
+    public AsyncUpdateFuture setPPM(double ppm) throws SDRplayException
     {
         getDeviceParameters().setPPM(ppm);
-        update(UpdateReason.DEVICE_PPM);
+
+        //Note: async ppm updates effect both frequency and sample rate, so we expect the completion of the
+        //operation will be first FREQUENCY and then SAMPLE RATE, so we watch for sample rate.
+        return updateAsync(UpdateReason.DEVICE_PPM, UpdateReason.DEVICE_SAMPLE_RATE);
     }
 
     /**

@@ -16,8 +16,8 @@ import jdk.incubator.foreign.ResourceScope;
  */
 public class RspDuoCompositeParameters extends CompositeParameters<RspDuoDeviceParameters, RspDuoTunerParameters>
 {
-    private RspDuoTunerParameters mTunerParameters2;
-    private ControlParameters mControlParameters2;
+    private RspDuoTunerParameters mTunerBParameters;
+    private ControlParameters mControlBParameters;
 
     /**
      * Constructs an instance from the foreign memory segment
@@ -31,26 +31,26 @@ public class RspDuoCompositeParameters extends CompositeParameters<RspDuoDeviceP
 
         MemoryAddress memoryAddressRxB = sdrplay_api_DeviceParamsT.rxChannelB$get(memorySegment);
         MemorySegment memorySegmentRxB = memoryAddressRxB.asSegment(sdrplay_api_RxChannelParamsT.sizeof(), resourceScope);
-        mTunerParameters2 = (RspDuoTunerParameters) TunerParametersFactory.create(DeviceType.RSPduo, memorySegmentRxB);
+        mTunerBParameters = (RspDuoTunerParameters) TunerParametersFactory.create(DeviceType.RSPduo, memorySegmentRxB);
 
-        MemorySegment tuner2ControlParametersMemorySegment = sdrplay_api_RxChannelParamsT.ctrlParams$slice(memorySegmentRxB);
-        mControlParameters2 = new ControlParameters(tuner2ControlParametersMemorySegment);
+        MemorySegment tunerBControlParametersMemorySegment = sdrplay_api_RxChannelParamsT.ctrlParams$slice(memorySegmentRxB);
+        mControlBParameters = new ControlParameters(tunerBControlParametersMemorySegment);
     }
 
     /**
-     * Tuner 2 Tuner Parameters
+     * Tuner B Tuner Parameters
      */
-    public RspDuoTunerParameters getTunerParameters2()
+    public RspDuoTunerParameters getTunerBParameters()
     {
-        return mTunerParameters2;
+        return mTunerBParameters;
     }
 
     /**
-     * Tuner 2 Control Parameters
+     * Tuner B Control Parameters
      */
-    public ControlParameters getControlParameters2()
+    public ControlParameters getControlBParameters()
     {
-        return mControlParameters2;
+        return mControlBParameters;
     }
 
     @Override
@@ -59,8 +59,8 @@ public class RspDuoCompositeParameters extends CompositeParameters<RspDuoDeviceP
         StringBuilder sb = new StringBuilder();
         sb.append("Device Composite Parameters\n");
         sb.append("\tDevice Parameters:\n").append(getDeviceParameters()).append("\n");
-        sb.append("\tRX Channel A:\n").append(getTunerParameters1()).append("\n");
-        sb.append("\tRX Channel B:\n").append(getTunerParameters2()).append("\n");
+        sb.append("\tTuner Channel A:\n").append(getTunerAParameters()).append("\n");
+        sb.append("\tTuner Channel B:\n").append(getTunerBParameters()).append("\n");
         return sb.toString();
     }
 }

@@ -2,9 +2,7 @@ package io.github.dsheirer.sdrplay.device;
 
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.SDRplayException;
-import io.github.dsheirer.sdrplay.Version;
 import io.github.dsheirer.sdrplay.parameter.composite.Rsp1CompositeParameters;
-import jdk.incubator.foreign.MemorySegment;
 
 /**
  * RSP1 Device
@@ -17,16 +15,15 @@ public class Rsp1Device extends Device<Rsp1CompositeParameters, Rsp1Tuner>
      * Constructs an SDRPlay RSP1 device from the foreign memory segment
      *
      * @param sdrPlay api instance that created this device
-     * @param version of the api
      * @param deviceStruct parser
      */
-    Rsp1Device(SDRplay sdrPlay, Version version, IDeviceStruct deviceStruct)
+    Rsp1Device(SDRplay sdrPlay, IDeviceStruct deviceStruct)
     {
-        super(sdrPlay, version, deviceStruct);
+        super(sdrPlay, deviceStruct);
     }
 
     @Override
-    public Rsp1Tuner getTuner1() throws SDRplayException
+    public Rsp1Tuner getTuner() throws SDRplayException
     {
         if(!isSelected())
         {
@@ -36,8 +33,8 @@ public class Rsp1Device extends Device<Rsp1CompositeParameters, Rsp1Tuner>
         if(mTuner1 == null)
         {
             mTuner1 = new Rsp1Tuner(Rsp1Device.this, getAPI(), getTunerSelect(),
-                    getCompositeParameters().getDeviceParameters(), getCompositeParameters().getTunerParameters1(),
-                    getCompositeParameters().getControlParameters1());
+                    getCompositeParameters().getDeviceParameters(), getCompositeParameters().getTunerAParameters(),
+                    getCompositeParameters().getControlAParameters());
         }
 
         return mTuner1;

@@ -30,25 +30,6 @@ public abstract class RspDuoTuner extends RspTuner<RspDuoDeviceParameters, RspDu
     }
 
     /**
-     * Indicates if the Bias-T is enabled
-     */
-    public boolean isBiasT()
-    {
-        return getTunerParameters().isBiasT();
-    }
-
-    /**
-     * Enables or disables the Bias-T
-     * @param enable value
-     * @throws SDRplayException if there is an error
-     */
-    public void setBiasT(boolean enable) throws SDRplayException
-    {
-        getTunerParameters().setBiasT(enable);
-        update(UpdateReason.RSP_DUO_BIAS_T_CONTROL);
-    }
-
-    /**
      * Indicates if the RF notch is enabled
      */
     public boolean isRFNotch()
