@@ -9,6 +9,7 @@ Java wrapper for [SDRplay](https://www.sdrplay.com/) API
 
 ## Supported API Version(s): 
 * [3.07](https://www.sdrplay.com/docs/SDRplay_API_Specification_v3.07.pdf)
+* [3.08](https://www.sdrplay.com/docs/SDRplay_API_Specification_v3.08.pdf)
 
 ## Supported Operating Systems:
 * Linux, MacOS, and Windows.
