@@ -3,24 +3,24 @@
 package io.github.dsheirer.sdrplay.api.v3_07;
 
 import java.lang.invoke.MethodHandle;
-
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 class constants$10 {
 
-    static final FunctionDescriptor sdrplay_api_SwapRspDuoMode$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER,
-        C_POINTER,
-        C_INT,
-        C_DOUBLE,
-        C_INT,
-        C_INT,
-        C_INT,
-        C_INT
+    static final FunctionDescriptor sdrplay_api_SwapRspDuoMode$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_DOUBLE$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_INT$LAYOUT
     );
     static final MethodHandle sdrplay_api_SwapRspDuoMode$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_SwapRspDuoMode",
-        "(Ljdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;IDIIII)I",
+        "sdrplay_api_SwapRspDuoMode",
         constants$10.sdrplay_api_SwapRspDuoMode$FUNC, false
     );
 }

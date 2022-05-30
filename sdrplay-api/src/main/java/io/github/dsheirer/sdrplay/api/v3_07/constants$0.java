@@ -3,36 +3,34 @@
 package io.github.dsheirer.sdrplay.api.v3_07;
 
 import java.lang.invoke.MethodHandle;
-
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 class constants$0 {
 
     static final FunctionDescriptor sdrplay_api_StreamCallback_t$FUNC = FunctionDescriptor.ofVoid(
-        C_POINTER,
-        C_POINTER,
-        C_POINTER,
-        C_INT,
-        C_INT,
-        C_POINTER
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_StreamCallback_t$MH = RuntimeHelper.downcallHandle(
-        "(Ljdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;IILjdk/incubator/foreign/MemoryAddress;)V",
         constants$0.sdrplay_api_StreamCallback_t$FUNC, false
     );
     static final FunctionDescriptor sdrplay_api_EventCallback_t$FUNC = FunctionDescriptor.ofVoid(
-        C_INT,
-        C_INT,
-        C_POINTER,
-        C_POINTER
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_EventCallback_t$MH = RuntimeHelper.downcallHandle(
-        "(IILjdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;)V",
         constants$0.sdrplay_api_EventCallback_t$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_Open_t$FUNC = FunctionDescriptor.of(C_INT);
+    static final FunctionDescriptor sdrplay_api_Open_t$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT);
     static final MethodHandle sdrplay_api_Open_t$MH = RuntimeHelper.downcallHandle(
-        "()I",
         constants$0.sdrplay_api_Open_t$FUNC, false
     );
 }

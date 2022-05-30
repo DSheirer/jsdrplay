@@ -2,21 +2,22 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-
+import static jdk.incubator.foreign.ValueLayout.*;
 public interface sdrplay_api_Open_t {
 
     int apply();
-    static MemoryAddress allocate(sdrplay_api_Open_t fi) {
-        return RuntimeHelper.upcallStub(sdrplay_api_Open_t.class, fi, constants$0.sdrplay_api_Open_t$FUNC, "()I");
-    }
-    static MemoryAddress allocate(sdrplay_api_Open_t fi, ResourceScope scope) {
+    static NativeSymbol allocate(sdrplay_api_Open_t fi, ResourceScope scope) {
         return RuntimeHelper.upcallStub(sdrplay_api_Open_t.class, fi, constants$0.sdrplay_api_Open_t$FUNC, "()I", scope);
     }
-    static sdrplay_api_Open_t ofAddress(MemoryAddress addr) {
-        return () -> {
+    static sdrplay_api_Open_t ofAddress(MemoryAddress addr, ResourceScope scope) {
+        NativeSymbol symbol = NativeSymbol.ofAddress("sdrplay_api_Open_t::" + Long.toHexString(addr.toRawLongValue()), addr, scope);
+return () -> {
             try {
-                return (int)constants$0.sdrplay_api_Open_t$MH.invokeExact((Addressable)addr);
+                return (int)constants$0.sdrplay_api_Open_t$MH.invokeExact(symbol);
             } catch (Throwable ex$) {
                 throw new AssertionError("should not reach here", ex$);
             }

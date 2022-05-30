@@ -1,20 +1,32 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group 'io.github.dsheirer'
-version '1.0-SNAPSHOT'
+version '3.8.0'
 
 repositories {
     mavenCentral()
 }
 
-//var incubatorArguments = ["--enable-native-access=ALL-UNNAMED,sdrplay.api,io.github.dsheirer.sdrplay",
-//                          "--add-modules", "jdk.incubator.foreign","-Djava.library.path=" + getJavaLibraryPath()]
-var incubatorArguments = ["--enable-native-access=ALL-UNNAMED,sdrplay.api,io.github.dsheirer.sdrplay",
-                          "--add-modules", "jdk.incubator.foreign"]
+//Java 18 is required for this version of the Project Panama incubator feature
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(18)
+    }
+}
 
-tasks.withType(Test) { jvmArgs += incubatorArguments }
+var incubatorArguments = ["--enable-native-access=ALL-UNNAMED,sdrplay.api,io.github.dsheirer.sdrplay",
+                          "--add-modules", "jdk.incubator.foreign","-Djava.library.path=" + getJavaLibraryPath()]
+
+tasks.withType(JavaExec) {
+    jvmArgs += incubatorArguments
+}
+tasks.withType(Test) {
+    jvmArgs += incubatorArguments
+}
 
 dependencies {
     implementation project(':sdrplay-api')
@@ -23,14 +35,15 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.32'
 
     testImplementation 'com.github.wendykierp:JTransforms:3.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 test {
-    //Exclude all tests by default
-//    exclude '**/*'
     useJUnitPlatform()
+
+    //Exclude all tests by default.  Comment out this line to run tests.
+    exclude '**/*'
 }
 
 /**
@@ -39,7 +52,7 @@ test {
 static String getJavaLibraryPath() {
     OperatingSystem os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem;
 
-    if(os.isLinux()) {
+    if(os.isLinux() || os.isMacOsX()) {
         return "/usr/local/lib"
     }
 
@@ -53,4 +66,55 @@ static String getJavaLibraryPath() {
     }
 
     return "";
+}
+
+publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId "io.github.dsheirer"
+            artifactId "jdsrplay"
+            version version
+            from components.java
+            pom {
+                name = 'jsdrplay'
+                description = 'Java wrapper for SDRPlay API'
+                url = 'https://github.com/DSheirer/jsdrplay'
+                licenses {
+                    license {
+                        name = 'GNU General Public License, Version 3.0'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'dsheirer'
+                        name = 'Dennis Sheirer'
+                        email = 'dsheirer@sonatype.com'
+                        organizationUrl = 'https://github.com/DSheirer'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/DSheirer/jsdrplay.git'
+                    developerConnection = 'scm:git:ssh://github.com/DSheirer/jsdrplay.git'
+                    url = 'https://github.com/DSheirer/sdrtrunk/tree/master'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications
 }

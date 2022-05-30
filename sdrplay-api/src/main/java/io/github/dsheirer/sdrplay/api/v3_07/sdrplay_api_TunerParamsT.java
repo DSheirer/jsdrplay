@@ -2,47 +2,48 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_TunerParamsT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        C_INT.withName("bwType"),
-        C_INT.withName("ifType"),
-        C_INT.withName("loMode"),
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        Constants$root.C_INT$LAYOUT.withName("bwType"),
+        Constants$root.C_INT$LAYOUT.withName("ifType"),
+        Constants$root.C_INT$LAYOUT.withName("loMode"),
         MemoryLayout.structLayout(
-            C_INT.withName("gRdB"),
-            C_CHAR.withName("LNAstate"),
-            C_CHAR.withName("syncUpdate"),
+            Constants$root.C_INT$LAYOUT.withName("gRdB"),
+            Constants$root.C_CHAR$LAYOUT.withName("LNAstate"),
+            Constants$root.C_CHAR$LAYOUT.withName("syncUpdate"),
             MemoryLayout.paddingLayout(16),
-            C_INT.withName("minGr"),
+            Constants$root.C_INT$LAYOUT.withName("minGr"),
             MemoryLayout.structLayout(
-                C_FLOAT.withName("curr"),
-                C_FLOAT.withName("max"),
-                C_FLOAT.withName("min")
+                Constants$root.C_FLOAT$LAYOUT.withName("curr"),
+                Constants$root.C_FLOAT$LAYOUT.withName("max"),
+                Constants$root.C_FLOAT$LAYOUT.withName("min")
             ).withName("gainVals")
         ).withName("gain"),
         MemoryLayout.paddingLayout(32),
         MemoryLayout.structLayout(
-            C_DOUBLE.withName("rfHz"),
-            C_CHAR.withName("syncUpdate"),
+            Constants$root.C_DOUBLE$LAYOUT.withName("rfHz"),
+            Constants$root.C_CHAR$LAYOUT.withName("syncUpdate"),
             MemoryLayout.paddingLayout(56)
         ).withName("rfFreq"),
         MemoryLayout.structLayout(
-            C_CHAR.withName("dcCal"),
-            C_CHAR.withName("speedUp"),
+            Constants$root.C_CHAR$LAYOUT.withName("dcCal"),
+            Constants$root.C_CHAR$LAYOUT.withName("speedUp"),
             MemoryLayout.paddingLayout(16),
-            C_INT.withName("trackTime"),
-            C_INT.withName("refreshRateTime")
+            Constants$root.C_INT$LAYOUT.withName("trackTime"),
+            Constants$root.C_INT$LAYOUT.withName("refreshRateTime")
         ).withName("dcOffsetTuner"),
         MemoryLayout.paddingLayout(32)
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_TunerParamsT.$struct$LAYOUT;
     }
-    static final VarHandle bwType$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("bwType"));
+    static final VarHandle bwType$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("bwType"));
     public static VarHandle bwType$VH() {
         return sdrplay_api_TunerParamsT.bwType$VH;
     }
@@ -58,7 +59,7 @@ public class sdrplay_api_TunerParamsT {
     public static void bwType$set(MemorySegment seg, long index, int x) {
         sdrplay_api_TunerParamsT.bwType$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle ifType$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("ifType"));
+    static final VarHandle ifType$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("ifType"));
     public static VarHandle ifType$VH() {
         return sdrplay_api_TunerParamsT.ifType$VH;
     }
@@ -74,7 +75,7 @@ public class sdrplay_api_TunerParamsT {
     public static void ifType$set(MemorySegment seg, long index, int x) {
         sdrplay_api_TunerParamsT.ifType$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle loMode$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("loMode"));
+    static final VarHandle loMode$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("loMode"));
     public static VarHandle loMode$VH() {
         return sdrplay_api_TunerParamsT.loMode$VH;
     }
@@ -101,12 +102,12 @@ public class sdrplay_api_TunerParamsT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

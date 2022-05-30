@@ -1,7 +1,7 @@
 package io.github.dsheirer.sdrplay.parameter.tuner;
 
-import io.github.dsheirer.sdrplay.device.DeviceType;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_RxChannelParamsT;
+import io.github.dsheirer.sdrplay.device.DeviceType;
 import jdk.incubator.foreign.MemorySegment;
 
 /**

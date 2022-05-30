@@ -2,17 +2,18 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_ErrorInfoT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        MemoryLayout.sequenceLayout(256, C_CHAR).withName("file"),
-        MemoryLayout.sequenceLayout(256, C_CHAR).withName("function"),
-        C_INT.withName("line"),
-        MemoryLayout.sequenceLayout(1024, C_CHAR).withName("message")
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        MemoryLayout.sequenceLayout(256, Constants$root.C_CHAR$LAYOUT).withName("file"),
+        MemoryLayout.sequenceLayout(256, Constants$root.C_CHAR$LAYOUT).withName("function"),
+        Constants$root.C_INT$LAYOUT.withName("line"),
+        MemoryLayout.sequenceLayout(1024, Constants$root.C_CHAR$LAYOUT).withName("message")
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_ErrorInfoT.$struct$LAYOUT;
@@ -23,7 +24,7 @@ public class sdrplay_api_ErrorInfoT {
     public static MemorySegment function$slice(MemorySegment seg) {
         return seg.asSlice(256, 256);
     }
-    static final VarHandle line$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("line"));
+    static final VarHandle line$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("line"));
     public static VarHandle line$VH() {
         return sdrplay_api_ErrorInfoT.line$VH;
     }
@@ -44,12 +45,12 @@ public class sdrplay_api_ErrorInfoT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

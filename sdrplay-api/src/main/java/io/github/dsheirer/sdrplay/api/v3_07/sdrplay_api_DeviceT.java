@@ -2,21 +2,22 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_DeviceT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        MemoryLayout.sequenceLayout(64, C_CHAR).withName("SerNo"),
-        C_CHAR.withName("hwVer"),
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        MemoryLayout.sequenceLayout(64, Constants$root.C_CHAR$LAYOUT).withName("SerNo"),
+        Constants$root.C_CHAR$LAYOUT.withName("hwVer"),
         MemoryLayout.paddingLayout(24),
-        C_INT.withName("tuner"),
-        C_INT.withName("rspDuoMode"),
+        Constants$root.C_INT$LAYOUT.withName("tuner"),
+        Constants$root.C_INT$LAYOUT.withName("rspDuoMode"),
         MemoryLayout.paddingLayout(32),
-        C_DOUBLE.withName("rspDuoSampleFreq"),
-        C_POINTER.withName("dev")
+        Constants$root.C_DOUBLE$LAYOUT.withName("rspDuoSampleFreq"),
+        Constants$root.C_POINTER$LAYOUT.withName("dev")
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_DeviceT.$struct$LAYOUT;
@@ -24,7 +25,7 @@ public class sdrplay_api_DeviceT {
     public static MemorySegment SerNo$slice(MemorySegment seg) {
         return seg.asSlice(0, 64);
     }
-    static final VarHandle hwVer$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("hwVer"));
+    static final VarHandle hwVer$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("hwVer"));
     public static VarHandle hwVer$VH() {
         return sdrplay_api_DeviceT.hwVer$VH;
     }
@@ -40,7 +41,7 @@ public class sdrplay_api_DeviceT {
     public static void hwVer$set(MemorySegment seg, long index, byte x) {
         sdrplay_api_DeviceT.hwVer$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle tuner$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("tuner"));
+    static final VarHandle tuner$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("tuner"));
     public static VarHandle tuner$VH() {
         return sdrplay_api_DeviceT.tuner$VH;
     }
@@ -56,7 +57,7 @@ public class sdrplay_api_DeviceT {
     public static void tuner$set(MemorySegment seg, long index, int x) {
         sdrplay_api_DeviceT.tuner$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle rspDuoMode$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("rspDuoMode"));
+    static final VarHandle rspDuoMode$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("rspDuoMode"));
     public static VarHandle rspDuoMode$VH() {
         return sdrplay_api_DeviceT.rspDuoMode$VH;
     }
@@ -72,7 +73,7 @@ public class sdrplay_api_DeviceT {
     public static void rspDuoMode$set(MemorySegment seg, long index, int x) {
         sdrplay_api_DeviceT.rspDuoMode$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle rspDuoSampleFreq$VH = $struct$LAYOUT.varHandle(double.class, MemoryLayout.PathElement.groupElement("rspDuoSampleFreq"));
+    static final VarHandle rspDuoSampleFreq$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("rspDuoSampleFreq"));
     public static VarHandle rspDuoSampleFreq$VH() {
         return sdrplay_api_DeviceT.rspDuoSampleFreq$VH;
     }
@@ -88,7 +89,7 @@ public class sdrplay_api_DeviceT {
     public static void rspDuoSampleFreq$set(MemorySegment seg, long index, double x) {
         sdrplay_api_DeviceT.rspDuoSampleFreq$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle dev$VH = MemoryHandles.asAddressVarHandle($struct$LAYOUT.varHandle(long.class, MemoryLayout.PathElement.groupElement("dev")));
+    static final VarHandle dev$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("dev"));
     public static VarHandle dev$VH() {
         return sdrplay_api_DeviceT.dev$VH;
     }
@@ -106,12 +107,12 @@ public class sdrplay_api_DeviceT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

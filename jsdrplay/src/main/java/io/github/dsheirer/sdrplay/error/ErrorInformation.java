@@ -1,7 +1,6 @@
 package io.github.dsheirer.sdrplay.error;
 
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_ErrorInfoT;
-import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemorySegment;
 
 /**
@@ -9,10 +8,6 @@ import jdk.incubator.foreign.MemorySegment;
  */
 public class ErrorInformation
 {
-    private static final int FILE_SIZE = 256;
-    private static final int FUNCTION_SIZE = 256;
-    private static final int MESSAGE_SIZE = 1024;
-
     private String mFile;
     private String mFunction;
     private int mLine;
@@ -23,22 +18,10 @@ public class ErrorInformation
      */
     public ErrorInformation(MemorySegment memorySegment)
     {
-        mFile = getString(sdrplay_api_ErrorInfoT.file$slice(memorySegment), FILE_SIZE);
-        mFunction = getString(sdrplay_api_ErrorInfoT.function$slice(memorySegment), FUNCTION_SIZE);
+        mFile = sdrplay_api_ErrorInfoT.file$slice(memorySegment).getUtf8String(0);
+        mFunction = sdrplay_api_ErrorInfoT.function$slice(memorySegment).getUtf8String(0);
         mLine = sdrplay_api_ErrorInfoT.line$get(memorySegment);
-        mMessage = getString(sdrplay_api_ErrorInfoT.message$slice(memorySegment), MESSAGE_SIZE);
-    }
-
-    private static String getString(MemorySegment memorySegment, int size)
-    {
-        byte[] bytes = new byte[size];
-
-        for(int x = 0; x < size; x++)
-        {
-            bytes[x] = MemoryAccess.getByteAtOffset(memorySegment, x);
-        }
-
-        return new String(bytes).trim();
+        mMessage = sdrplay_api_ErrorInfoT.message$slice(memorySegment).getUtf8String(0);
     }
 
     public String getFile()

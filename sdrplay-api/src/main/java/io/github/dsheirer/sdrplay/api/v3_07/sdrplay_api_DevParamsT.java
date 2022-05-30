@@ -2,57 +2,58 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_DevParamsT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        C_DOUBLE.withName("ppm"),
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        Constants$root.C_DOUBLE$LAYOUT.withName("ppm"),
         MemoryLayout.structLayout(
-            C_DOUBLE.withName("fsHz"),
-            C_CHAR.withName("syncUpdate"),
-            C_CHAR.withName("reCal"),
+            Constants$root.C_DOUBLE$LAYOUT.withName("fsHz"),
+            Constants$root.C_CHAR$LAYOUT.withName("syncUpdate"),
+            Constants$root.C_CHAR$LAYOUT.withName("reCal"),
             MemoryLayout.paddingLayout(48)
         ).withName("fsFreq"),
         MemoryLayout.structLayout(
-            C_INT.withName("sampleNum"),
-            C_INT.withName("period")
+            Constants$root.C_INT$LAYOUT.withName("sampleNum"),
+            Constants$root.C_INT$LAYOUT.withName("period")
         ).withName("syncUpdate"),
         MemoryLayout.structLayout(
-            C_CHAR.withName("resetGainUpdate"),
-            C_CHAR.withName("resetRfUpdate"),
-            C_CHAR.withName("resetFsUpdate")
+            Constants$root.C_CHAR$LAYOUT.withName("resetGainUpdate"),
+            Constants$root.C_CHAR$LAYOUT.withName("resetRfUpdate"),
+            Constants$root.C_CHAR$LAYOUT.withName("resetFsUpdate")
         ).withName("resetFlags"),
         MemoryLayout.paddingLayout(8),
-        C_INT.withName("mode"),
-        C_INT.withName("samplesPerPkt"),
+        Constants$root.C_INT$LAYOUT.withName("mode"),
+        Constants$root.C_INT$LAYOUT.withName("samplesPerPkt"),
         MemoryLayout.structLayout(
-            C_CHAR.withName("rfNotchEnable"),
-            C_CHAR.withName("rfDabNotchEnable")
+            Constants$root.C_CHAR$LAYOUT.withName("rfNotchEnable"),
+            Constants$root.C_CHAR$LAYOUT.withName("rfDabNotchEnable")
         ).withName("rsp1aParams"),
         MemoryLayout.structLayout(
-            C_CHAR.withName("extRefOutputEn")
+            Constants$root.C_CHAR$LAYOUT.withName("extRefOutputEn")
         ).withName("rsp2Params"),
         MemoryLayout.paddingLayout(8),
         MemoryLayout.structLayout(
-            C_INT.withName("extRefOutputEn")
+            Constants$root.C_INT$LAYOUT.withName("extRefOutputEn")
         ).withName("rspDuoParams"),
         MemoryLayout.structLayout(
-            C_CHAR.withName("hdrEnable"),
-            C_CHAR.withName("biasTEnable"),
+            Constants$root.C_CHAR$LAYOUT.withName("hdrEnable"),
+            Constants$root.C_CHAR$LAYOUT.withName("biasTEnable"),
             MemoryLayout.paddingLayout(16),
-            C_INT.withName("antennaSel"),
-            C_CHAR.withName("rfNotchEnable"),
-            C_CHAR.withName("rfDabNotchEnable"),
+            Constants$root.C_INT$LAYOUT.withName("antennaSel"),
+            Constants$root.C_CHAR$LAYOUT.withName("rfNotchEnable"),
+            Constants$root.C_CHAR$LAYOUT.withName("rfDabNotchEnable"),
             MemoryLayout.paddingLayout(16)
         ).withName("rspDxParams")
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_DevParamsT.$struct$LAYOUT;
     }
-    static final VarHandle ppm$VH = $struct$LAYOUT.varHandle(double.class, MemoryLayout.PathElement.groupElement("ppm"));
+    static final VarHandle ppm$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("ppm"));
     public static VarHandle ppm$VH() {
         return sdrplay_api_DevParamsT.ppm$VH;
     }
@@ -77,7 +78,7 @@ public class sdrplay_api_DevParamsT {
     public static MemorySegment resetFlags$slice(MemorySegment seg) {
         return seg.asSlice(32, 3);
     }
-    static final VarHandle mode$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("mode"));
+    static final VarHandle mode$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("mode"));
     public static VarHandle mode$VH() {
         return sdrplay_api_DevParamsT.mode$VH;
     }
@@ -93,7 +94,7 @@ public class sdrplay_api_DevParamsT {
     public static void mode$set(MemorySegment seg, long index, int x) {
         sdrplay_api_DevParamsT.mode$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle samplesPerPkt$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("samplesPerPkt"));
+    static final VarHandle samplesPerPkt$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("samplesPerPkt"));
     public static VarHandle samplesPerPkt$VH() {
         return sdrplay_api_DevParamsT.samplesPerPkt$VH;
     }
@@ -123,12 +124,12 @@ public class sdrplay_api_DevParamsT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

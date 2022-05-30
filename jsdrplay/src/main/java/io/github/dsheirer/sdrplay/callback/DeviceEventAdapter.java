@@ -57,7 +57,7 @@ public class DeviceEventAdapter implements sdrplay_api_EventCallback_t
     public void apply(int eventTypeId, int tunerSelectId, MemoryAddress eventParametersPointer,
                       MemoryAddress callbackContext)
     {
-        MemorySegment memorySegment = eventParametersPointer.asSegment(sdrplay_api_EventParamsT.sizeof(), mResourceScope);
+        MemorySegment memorySegment = sdrplay_api_EventParamsT.ofAddress(eventParametersPointer, mResourceScope);
         EventType eventType = EventType.fromValue(eventTypeId);
         TunerSelect tunerSelect = TunerSelect.fromValue(tunerSelectId);
 

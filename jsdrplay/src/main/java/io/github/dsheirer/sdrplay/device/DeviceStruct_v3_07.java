@@ -1,10 +1,6 @@
 package io.github.dsheirer.sdrplay.device;
 
-import io.github.dsheirer.sdrplay.SDRplayException;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
-import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_h;
-import io.github.dsheirer.sdrplay.parameter.tuner.SampleRate;
-import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemoryAddress;
 import jdk.incubator.foreign.MemorySegment;
 
@@ -25,15 +21,8 @@ public class DeviceStruct_v3_07 implements IDeviceStruct
     {
         mDeviceMemorySegment = deviceMemorySegment;
         mDeviceType = DeviceType.fromValue(0xFF & sdrplay_api_DeviceT.hwVer$get(mDeviceMemorySegment));
-
         MemorySegment serialSegment = sdrplay_api_DeviceT.SerNo$slice(mDeviceMemorySegment);
-        byte[] serialBytes = new byte[sdrplay_api_h.SDRPLAY_MAX_SER_NO_LEN()];
-        for(int x = 0; x < sdrplay_api_h.SDRPLAY_MAX_SER_NO_LEN(); x++)
-        {
-            serialBytes[x] = MemoryAccess.getByteAtOffset(serialSegment, x);
-        }
-        mSerialNumber = new String(serialBytes).trim();
-
+        mSerialNumber = serialSegment.getUtf8String(0);
     }
 
     @Override public MemorySegment getDeviceMemorySegment()
@@ -81,7 +70,7 @@ public class DeviceStruct_v3_07 implements IDeviceStruct
     @Override
     public void setRspDuoSampleFrequency(double frequency)
     {
-        io.github.dsheirer.sdrplay.api.v3_08.sdrplay_api_DeviceT.rspDuoSampleFreq$set(getDeviceMemorySegment(), frequency);
+        sdrplay_api_DeviceT.rspDuoSampleFreq$set(getDeviceMemorySegment(), frequency);
     }
 
     @Override public MemoryAddress getDeviceHandle()

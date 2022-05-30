@@ -4,11 +4,9 @@ import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_StreamCallback_t;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_StreamCbParamsT;
 import io.github.dsheirer.sdrplay.device.TunerSelect;
 import io.github.dsheirer.sdrplay.util.Flag;
-import jdk.incubator.foreign.CLinker;
-import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemoryAddress;
-import jdk.incubator.foreign.MemorySegment;
 import jdk.incubator.foreign.ResourceScope;
+import jdk.incubator.foreign.ValueLayout;
 
 /**
  * I/Q sample stream callback adapter.  Implements the native interface and transfers the native callback data to an
@@ -67,8 +65,8 @@ public class StreamCallbackAdapter implements sdrplay_api_StreamCallback_t
         if(mStreamListener != null || mStreamCallbackListener != null)
         {
             //Translate the callback parameters pointer to a memory segment and re-construct the parameters as a Java object
-            StreamCallbackParameters parameters = new StreamCallbackParameters(parametersPointer
-                    .asSegment(sdrplay_api_StreamCbParamsT.sizeof(), mResourceScope));
+            StreamCallbackParameters parameters = new StreamCallbackParameters(sdrplay_api_StreamCbParamsT
+                    .ofAddress(parametersPointer, mResourceScope));
 
             if(mStreamCallbackListener != null)
             {
@@ -77,17 +75,14 @@ public class StreamCallbackAdapter implements sdrplay_api_StreamCallback_t
 
             if(mStreamListener != null)
             {
-                MemorySegment iSegment = iSamplesPointer.asSegment(CLinker.C_SHORT.byteSize() * sampleCount, mResourceScope);
-                MemorySegment qSegment = qSamplesPointer.asSegment(CLinker.C_SHORT.byteSize() * sampleCount, mResourceScope);
-
                 //Copy the I/Q samples from foreign memory to native java arrays
                 short[] i = new short[sampleCount];
                 short[] q = new short[sampleCount];
 
                 for(int x = 0; x < sampleCount; x++)
                 {
-                    i[x] = MemoryAccess.getShortAtIndex(iSegment, x);
-                    q[x] = MemoryAccess.getShortAtIndex(qSegment, x);
+                    i[x] = iSamplesPointer.get(ValueLayout.JAVA_SHORT, x);
+                    q[x] = qSamplesPointer.get(ValueLayout.JAVA_SHORT, x);
                 }
 
                 mStreamListener.processStream(i, q, parameters, Flag.evaluate(reset));

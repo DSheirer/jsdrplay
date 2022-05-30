@@ -1,12 +1,12 @@
 package io.github.dsheirer.sdrplay.parameter.composite;
 
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceParamsT;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_RxChannelParamsT;
 import io.github.dsheirer.sdrplay.device.DeviceType;
 import io.github.dsheirer.sdrplay.parameter.control.ControlParameters;
 import io.github.dsheirer.sdrplay.parameter.device.RspDuoDeviceParameters;
 import io.github.dsheirer.sdrplay.parameter.tuner.RspDuoTunerParameters;
 import io.github.dsheirer.sdrplay.parameter.tuner.TunerParametersFactory;
-import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceParamsT;
-import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_RxChannelParamsT;
 import jdk.incubator.foreign.MemoryAddress;
 import jdk.incubator.foreign.MemorySegment;
 import jdk.incubator.foreign.ResourceScope;
@@ -30,7 +30,7 @@ public class RspDuoCompositeParameters extends CompositeParameters<RspDuoDeviceP
         super(DeviceType.RSPduo, memorySegment, resourceScope);
 
         MemoryAddress memoryAddressRxB = sdrplay_api_DeviceParamsT.rxChannelB$get(memorySegment);
-        MemorySegment memorySegmentRxB = memoryAddressRxB.asSegment(sdrplay_api_RxChannelParamsT.sizeof(), resourceScope);
+        MemorySegment memorySegmentRxB = sdrplay_api_RxChannelParamsT.ofAddress(memoryAddressRxB, resourceScope);
         mTunerBParameters = (RspDuoTunerParameters) TunerParametersFactory.create(DeviceType.RSPduo, memorySegmentRxB);
 
         MemorySegment tunerBControlParametersMemorySegment = sdrplay_api_RxChannelParamsT.ctrlParams$slice(memorySegmentRxB);

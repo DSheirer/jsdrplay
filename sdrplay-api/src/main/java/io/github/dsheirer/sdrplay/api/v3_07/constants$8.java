@@ -3,56 +3,51 @@
 package io.github.dsheirer.sdrplay.api.v3_07;
 
 import java.lang.invoke.MethodHandle;
-
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 class constants$8 {
 
-    static final FunctionDescriptor sdrplay_api_SelectDevice$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_SelectDevice$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_SelectDevice$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_SelectDevice",
-        "(Ljdk/incubator/foreign/MemoryAddress;)I",
+        "sdrplay_api_SelectDevice",
         constants$8.sdrplay_api_SelectDevice$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_ReleaseDevice$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_ReleaseDevice$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_ReleaseDevice$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_ReleaseDevice",
-        "(Ljdk/incubator/foreign/MemoryAddress;)I",
+        "sdrplay_api_ReleaseDevice",
         constants$8.sdrplay_api_ReleaseDevice$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_GetErrorString$FUNC = FunctionDescriptor.of(C_POINTER,
-        C_INT
+    static final FunctionDescriptor sdrplay_api_GetErrorString$FUNC = FunctionDescriptor.of(Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_INT$LAYOUT
     );
     static final MethodHandle sdrplay_api_GetErrorString$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_GetErrorString",
-        "(I)Ljdk/incubator/foreign/MemoryAddress;",
+        "sdrplay_api_GetErrorString",
         constants$8.sdrplay_api_GetErrorString$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_GetLastError$FUNC = FunctionDescriptor.of(C_POINTER,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_GetLastError$FUNC = FunctionDescriptor.of(Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_GetLastError$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_GetLastError",
-        "(Ljdk/incubator/foreign/MemoryAddress;)Ljdk/incubator/foreign/MemoryAddress;",
+        "sdrplay_api_GetLastError",
         constants$8.sdrplay_api_GetLastError$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_DisableHeartbeat$FUNC = FunctionDescriptor.of(C_INT);
+    static final FunctionDescriptor sdrplay_api_DisableHeartbeat$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT);
     static final MethodHandle sdrplay_api_DisableHeartbeat$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_DisableHeartbeat",
-        "()I",
+        "sdrplay_api_DisableHeartbeat",
         constants$8.sdrplay_api_DisableHeartbeat$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_DebugEnable$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER,
-        C_INT
+    static final FunctionDescriptor sdrplay_api_DebugEnable$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_INT$LAYOUT
     );
     static final MethodHandle sdrplay_api_DebugEnable$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_DebugEnable",
-        "(Ljdk/incubator/foreign/MemoryAddress;I)I",
+        "sdrplay_api_DebugEnable",
         constants$8.sdrplay_api_DebugEnable$FUNC, false
     );
 }

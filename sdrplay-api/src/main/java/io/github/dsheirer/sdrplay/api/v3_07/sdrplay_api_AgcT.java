@@ -2,25 +2,26 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_AgcT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        C_INT.withName("enable"),
-        C_INT.withName("setPoint_dBfs"),
-        C_SHORT.withName("attack_ms"),
-        C_SHORT.withName("decay_ms"),
-        C_SHORT.withName("decay_delay_ms"),
-        C_SHORT.withName("decay_threshold_dB"),
-        C_INT.withName("syncUpdate")
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        Constants$root.C_INT$LAYOUT.withName("enable"),
+        Constants$root.C_INT$LAYOUT.withName("setPoint_dBfs"),
+        Constants$root.C_SHORT$LAYOUT.withName("attack_ms"),
+        Constants$root.C_SHORT$LAYOUT.withName("decay_ms"),
+        Constants$root.C_SHORT$LAYOUT.withName("decay_delay_ms"),
+        Constants$root.C_SHORT$LAYOUT.withName("decay_threshold_dB"),
+        Constants$root.C_INT$LAYOUT.withName("syncUpdate")
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_AgcT.$struct$LAYOUT;
     }
-    static final VarHandle enable$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("enable"));
+    static final VarHandle enable$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("enable"));
     public static VarHandle enable$VH() {
         return sdrplay_api_AgcT.enable$VH;
     }
@@ -36,7 +37,7 @@ public class sdrplay_api_AgcT {
     public static void enable$set(MemorySegment seg, long index, int x) {
         sdrplay_api_AgcT.enable$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle setPoint_dBfs$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("setPoint_dBfs"));
+    static final VarHandle setPoint_dBfs$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("setPoint_dBfs"));
     public static VarHandle setPoint_dBfs$VH() {
         return sdrplay_api_AgcT.setPoint_dBfs$VH;
     }
@@ -52,7 +53,7 @@ public class sdrplay_api_AgcT {
     public static void setPoint_dBfs$set(MemorySegment seg, long index, int x) {
         sdrplay_api_AgcT.setPoint_dBfs$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle attack_ms$VH = $struct$LAYOUT.varHandle(short.class, MemoryLayout.PathElement.groupElement("attack_ms"));
+    static final VarHandle attack_ms$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("attack_ms"));
     public static VarHandle attack_ms$VH() {
         return sdrplay_api_AgcT.attack_ms$VH;
     }
@@ -68,7 +69,7 @@ public class sdrplay_api_AgcT {
     public static void attack_ms$set(MemorySegment seg, long index, short x) {
         sdrplay_api_AgcT.attack_ms$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle decay_ms$VH = $struct$LAYOUT.varHandle(short.class, MemoryLayout.PathElement.groupElement("decay_ms"));
+    static final VarHandle decay_ms$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("decay_ms"));
     public static VarHandle decay_ms$VH() {
         return sdrplay_api_AgcT.decay_ms$VH;
     }
@@ -84,7 +85,7 @@ public class sdrplay_api_AgcT {
     public static void decay_ms$set(MemorySegment seg, long index, short x) {
         sdrplay_api_AgcT.decay_ms$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle decay_delay_ms$VH = $struct$LAYOUT.varHandle(short.class, MemoryLayout.PathElement.groupElement("decay_delay_ms"));
+    static final VarHandle decay_delay_ms$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("decay_delay_ms"));
     public static VarHandle decay_delay_ms$VH() {
         return sdrplay_api_AgcT.decay_delay_ms$VH;
     }
@@ -100,7 +101,7 @@ public class sdrplay_api_AgcT {
     public static void decay_delay_ms$set(MemorySegment seg, long index, short x) {
         sdrplay_api_AgcT.decay_delay_ms$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle decay_threshold_dB$VH = $struct$LAYOUT.varHandle(short.class, MemoryLayout.PathElement.groupElement("decay_threshold_dB"));
+    static final VarHandle decay_threshold_dB$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("decay_threshold_dB"));
     public static VarHandle decay_threshold_dB$VH() {
         return sdrplay_api_AgcT.decay_threshold_dB$VH;
     }
@@ -116,7 +117,7 @@ public class sdrplay_api_AgcT {
     public static void decay_threshold_dB$set(MemorySegment seg, long index, short x) {
         sdrplay_api_AgcT.decay_threshold_dB$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle syncUpdate$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("syncUpdate"));
+    static final VarHandle syncUpdate$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("syncUpdate"));
     public static VarHandle syncUpdate$VH() {
         return sdrplay_api_AgcT.syncUpdate$VH;
     }
@@ -134,12 +135,12 @@ public class sdrplay_api_AgcT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

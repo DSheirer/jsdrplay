@@ -3,30 +3,28 @@
 package io.github.dsheirer.sdrplay.api.v3_07;
 
 import java.lang.invoke.MethodHandle;
-
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 class constants$3 {
 
-    static final FunctionDescriptor sdrplay_api_ReleaseDevice_t$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_ReleaseDevice_t$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_ReleaseDevice_t$MH = RuntimeHelper.downcallHandle(
-        "(Ljdk/incubator/foreign/MemoryAddress;)I",
         constants$3.sdrplay_api_ReleaseDevice_t$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_GetErrorString_t$FUNC = FunctionDescriptor.of(C_POINTER,
-        C_INT
+    static final FunctionDescriptor sdrplay_api_GetErrorString_t$FUNC = FunctionDescriptor.of(Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_INT$LAYOUT
     );
     static final MethodHandle sdrplay_api_GetErrorString_t$MH = RuntimeHelper.downcallHandle(
-        "(I)Ljdk/incubator/foreign/MemoryAddress;",
         constants$3.sdrplay_api_GetErrorString_t$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_GetLastError_t$FUNC = FunctionDescriptor.of(C_POINTER,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_GetLastError_t$FUNC = FunctionDescriptor.of(Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_GetLastError_t$MH = RuntimeHelper.downcallHandle(
-        "(Ljdk/incubator/foreign/MemoryAddress;)Ljdk/incubator/foreign/MemoryAddress;",
         constants$3.sdrplay_api_GetLastError_t$FUNC, false
     );
 }

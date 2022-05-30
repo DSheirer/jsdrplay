@@ -18,25 +18,29 @@ import io.github.dsheirer.sdrplay.error.ErrorInformation;
 import io.github.dsheirer.sdrplay.parameter.composite.CompositeParameters;
 import io.github.dsheirer.sdrplay.parameter.composite.CompositeParametersFactory;
 import io.github.dsheirer.sdrplay.util.Flag;
-import jdk.incubator.foreign.CLinker;
-import jdk.incubator.foreign.MemoryAccess;
-import jdk.incubator.foreign.MemoryAddress;
-import jdk.incubator.foreign.MemorySegment;
-import jdk.incubator.foreign.ResourceScope;
-import jdk.incubator.foreign.SegmentAllocator;
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import jdk.incubator.foreign.MemoryAddress;
+import jdk.incubator.foreign.MemorySegment;
+import jdk.incubator.foreign.ResourceScope;
+import jdk.incubator.foreign.SegmentAllocator;
+import jdk.incubator.foreign.ValueLayout;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SDRplay API wrapper.
+ *
+ * Note: the jextract auto-generated RuntimeHelper contains a static block that attempts to load the sdrplay_api
+ * library.  This approach fails because the API is installed to a non-default location.  Comment out the library
+ * load code in the RuntimeHelper and we'll directly load the library.
+ *
+ * //        System.loadLibrary("libsdrplay_api");
  */
 public class SDRplay
 {
@@ -57,7 +61,7 @@ public class SDRplay
     /**
      * Foreign memory segment allocator for the resource scope
      */
-    private SegmentAllocator mSegmentAllocator = SegmentAllocator.ofScope(mResourceScope);
+    private SegmentAllocator mSegmentAllocator = SegmentAllocator.nativeAllocator(mResourceScope);
 
     /**
      * Indicates if libsdrplay_api.xx library was found and loaded.
@@ -165,14 +169,14 @@ public class SDRplay
         //Get a version-correct array of DeviceT structures
         MemorySegment devicesArray = DeviceFactory.createForeignDeviceArray(getVersion(), mSegmentAllocator);
 
-        MemorySegment deviceCount = mSegmentAllocator.allocate(CLinker.C_INT, 0);
+        MemorySegment deviceCount = mSegmentAllocator.allocate(ValueLayout.JAVA_INT, 0);
 
         Status status = Status.fromValue(sdrplay_api_h.sdrplay_api_GetDevices(devicesArray, deviceCount,
                 sdrplay_api_h.SDRPLAY_MAX_DEVICES()));
 
         if(status.success())
         {
-            int count = MemoryAccess.getInt(deviceCount);
+            int count = deviceCount.get(ValueLayout.JAVA_INT, 0);
             mDevices.clear();
             mDevices.addAll(DeviceFactory.parseDevices(getVersion(), SDRplay.this, devicesArray, count));
             mLog.info("Loaded Device Count: " + mDevices.size());
@@ -403,12 +407,12 @@ public class SDRplay
         checkValidDevice(device);
 
         //Allocate a pointer that the api will fill with the memory address of the device parameters in memory.
-        MemorySegment pointer = mSegmentAllocator.allocate(CLinker.C_POINTER);
+        MemorySegment pointer = mSegmentAllocator.allocate(ValueLayout.ADDRESS);
         Status status = Status.fromValue(sdrplay_api_h.sdrplay_api_GetDeviceParams(deviceHandle, pointer));
 
         if(status.success())
         {
-            MemoryAddress memoryAddress = MemoryAccess.getAddress(pointer);
+            MemoryAddress memoryAddress = pointer.address();
             MemorySegment memorySegment = sdrplay_api_DeviceT.ofAddress(memoryAddress, mResourceScope);
             return CompositeParametersFactory.create(device.getDeviceType(), memorySegment, mResourceScope);
         }
@@ -431,7 +435,7 @@ public class SDRplay
         checkValidDevice(device);
 
         //Since we don't need/use the callback context ... setup as a pointer to the callback functions
-        MemorySegment contextPointer = mSegmentAllocator.allocate(CLinker.C_POINTER, callbackFunctions);
+        MemorySegment contextPointer = mSegmentAllocator.allocate(ValueLayout.ADDRESS, callbackFunctions);
         Status status = Status.fromValue(sdrplay_api_h.sdrplay_api_Init(deviceHandle, callbackFunctions, contextPointer));
 
         if(!status.success())
@@ -529,7 +533,7 @@ public class SDRplay
     private ErrorInformation getLastError(Device device, MemorySegment deviceSegment)
     {
         MemoryAddress errorAddress = sdrplay_api_h.sdrplay_api_GetLastError(deviceSegment);
-        MemorySegment errorSegment = errorAddress.asSegment(sdrplay_api_ErrorInfoT.sizeof(), mResourceScope);
+        MemorySegment errorSegment = sdrplay_api_ErrorInfoT.ofAddress(errorAddress, mResourceScope);
         return new ErrorInformation(errorSegment);
     }
 
@@ -598,16 +602,12 @@ public class SDRplay
     /**
      * Closes the API service.  MUST be invoked before shutdown, after all SDRPlay API operations are completed.
      */
-    public void close() throws SDRplayException
+    public Status close()
     {
         Status closeStatus = Status.fromValue(sdrplay_api_h.sdrplay_api_Close());
         mSdrplayLibraryLoaded = false;
         mAvailable = false;
-
-        if(closeStatus.fail())
-        {
-            throw new SDRplayException("Unable to close the API", closeStatus);
-        }
+        return closeStatus;
     }
 
     /**
@@ -622,13 +622,13 @@ public class SDRplay
     {
         if(mSdrplayLibraryLoaded)
         {
-            SegmentAllocator allocator = SegmentAllocator.ofScope(mResourceScope);
-            MemorySegment memorySegment = allocator.allocate(CLinker.C_FLOAT, 0.0f);
+            SegmentAllocator allocator = SegmentAllocator.nativeAllocator(mResourceScope);
+            MemorySegment memorySegment = allocator.allocate(ValueLayout.JAVA_FLOAT, 0.0f);
             Status status = Status.fromValue(sdrplay_api_h.sdrplay_api_ApiVersion(memorySegment));
 
             if(status.success())
             {
-                float apiVersion = MemoryAccess.getFloat(memorySegment);
+                float apiVersion = memorySegment.get(ValueLayout.JAVA_FLOAT, 0);
                 return Version.fromValue(apiVersion);
             }
         }
@@ -701,5 +701,20 @@ public class SDRplay
 
         mLog.error("Unrecognized operating system.  Cannot identify sdrplay api library path");
         return "";
+    }
+
+    public static void main(String[] args)
+    {
+        SDRplay sdrplay = new SDRplay();
+        Status status = sdrplay.open();
+        mLog.info("Open Status: " + status);
+
+        for(DeviceDescriptor deviceDescriptor: sdrplay.getDevices())
+        {
+            mLog.info("Found: " + deviceDescriptor);
+        }
+
+        Status closeStatus = sdrplay.close();
+        mLog.info("Close Status: " + closeStatus);
     }
 }

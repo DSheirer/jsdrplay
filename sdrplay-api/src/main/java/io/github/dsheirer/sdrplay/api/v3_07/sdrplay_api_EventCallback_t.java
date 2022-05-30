@@ -2,22 +2,22 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
-import jdk.incubator.foreign.Addressable;
-import jdk.incubator.foreign.MemoryAddress;
-import jdk.incubator.foreign.ResourceScope;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
+import jdk.incubator.foreign.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public interface sdrplay_api_EventCallback_t {
 
     void apply(int x0, int x1, jdk.incubator.foreign.MemoryAddress x2, jdk.incubator.foreign.MemoryAddress x3);
-    static MemoryAddress allocate(sdrplay_api_EventCallback_t fi) {
-        return RuntimeHelper.upcallStub(sdrplay_api_EventCallback_t.class, fi, constants$0.sdrplay_api_EventCallback_t$FUNC, "(IILjdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;)V");
-    }
-    static MemoryAddress allocate(sdrplay_api_EventCallback_t fi, ResourceScope scope) {
+    static NativeSymbol allocate(sdrplay_api_EventCallback_t fi, ResourceScope scope) {
         return RuntimeHelper.upcallStub(sdrplay_api_EventCallback_t.class, fi, constants$0.sdrplay_api_EventCallback_t$FUNC, "(IILjdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;)V", scope);
     }
-    static sdrplay_api_EventCallback_t ofAddress(MemoryAddress addr) {
-        return (int x0, int x1, jdk.incubator.foreign.MemoryAddress x2, jdk.incubator.foreign.MemoryAddress x3) -> {
+    static sdrplay_api_EventCallback_t ofAddress(MemoryAddress addr, ResourceScope scope) {
+        NativeSymbol symbol = NativeSymbol.ofAddress("sdrplay_api_EventCallback_t::" + Long.toHexString(addr.toRawLongValue()), addr, scope);
+return (int x0, int x1, jdk.incubator.foreign.MemoryAddress x2, jdk.incubator.foreign.MemoryAddress x3) -> {
             try {
-                constants$0.sdrplay_api_EventCallback_t$MH.invokeExact((Addressable)addr, x0, x1, x2, x3);
+                constants$0.sdrplay_api_EventCallback_t$MH.invokeExact(symbol, x0, x1, (jdk.incubator.foreign.Addressable)x2, (jdk.incubator.foreign.Addressable)x3);
             } catch (Throwable ex$) {
                 throw new AssertionError("should not reach here", ex$);
             }

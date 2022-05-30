@@ -29,13 +29,13 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Abstract device structure (sdrplay_api_DeviceT)
  */
-public abstract class Device<T extends CompositeParameters, R extends RspTuner>
+public abstract class Device<T extends CompositeParameters<?,?>, R extends RspTuner<?,?>>
 {
     private static final Logger mLog = LoggerFactory.getLogger(Device.class);
 
-    private SDRplay mSDRplay;
-    private UpdateRequestManager mUpdateRequestManager = new UpdateRequestManager();
-    private IDeviceStruct mDeviceStruct;
+    private final SDRplay mSDRplay;
+    private final UpdateRequestManager mUpdateRequestManager = new UpdateRequestManager();
+    private final IDeviceStruct mDeviceStruct;
     protected boolean mSelected = false;
     protected boolean mInitialized = false;
     private T mCompositeParameters;
@@ -138,7 +138,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
     }
 
     /**
-     * Initializes this device for use and starts the tuner providing raw signal samles to the stream listener(s) and
+     * Initializes this device for use and starts the tuner providing raw signal samples to the stream listener(s) and
      * device events to the event listener.
      *
      * Note: invoke select() to select this device for exclusive use before invoking this method.  If this device has
@@ -147,7 +147,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
      *
      * @param eventListener to receive device event notifications
      * @param streamListeners one or two stream listeners to receive samples from the tuner where the first listener
-     * will receive samples from tuner 1 and the optional second listener will receive samlpes from tuner 2 (RSPduo only).
+     * will receive samples from tuner 1 and the optional second listener will receive samples from tuner 2 (RSPduo only).
      * Note: if only a single stream listener is specified, an empty listener is created for the seconds stream.
      * @throws SDRplayException if there is an error
      */
@@ -320,7 +320,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
 
     /**
      * Sets the composite parameters
-     * @param compositeParameters
+     * @param compositeParameters to apply
      */
     public void setCompositeParameters(T compositeParameters)
     {
@@ -429,10 +429,10 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
     class UpdateRequestManager implements IStreamCallbackListener
     {
         private static final long UPDATE_QUEUE_PROCESSING_INTERVAL_MS = 75;
-        private ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
-        private Queue<AsyncUpdateFuture> mUpdateQueue = new ConcurrentLinkedQueue();
-        private Queue<CompletedAsyncUpdate> mCompletedUpdateQueue = new ConcurrentLinkedQueue();
-        private ReentrantLock mLock = new ReentrantLock();
+        private final ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
+        private final Queue<AsyncUpdateFuture> mUpdateQueue = new ConcurrentLinkedQueue();
+        private final Queue<CompletedAsyncUpdate> mCompletedUpdateQueue = new ConcurrentLinkedQueue();
+        private final ReentrantLock mLock = new ReentrantLock();
 
 
         /**
@@ -563,7 +563,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
 
         /**
          * Receives an update completion event.  This is a non-blocking operation since this method will be invoked
-         * by the stream callback thread and we don't want to impact the delivery of streaming samples or events.
+         * by the stream callback thread, and we don't want to impact the delivery of streaming samples or events.
          *
          * @param tunerSelect tuner that was updated
          * @param updateReason for what was updated
@@ -571,7 +571,7 @@ public abstract class Device<T extends CompositeParameters, R extends RspTuner>
         public void completed(TunerSelect tunerSelect, UpdateReason updateReason)
         {
             mCompletedUpdateQueue.add(new CompletedAsyncUpdate(tunerSelect, updateReason));
-            mExecutorService.schedule(() -> processQueues(), 0, TimeUnit.MILLISECONDS);
+            mExecutorService.schedule(this::processQueues, 0, TimeUnit.MILLISECONDS);
         }
 
         /**

@@ -2,33 +2,34 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_ControlParamsT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
         MemoryLayout.structLayout(
-            C_CHAR.withName("DCenable"),
-            C_CHAR.withName("IQenable")
+            Constants$root.C_CHAR$LAYOUT.withName("DCenable"),
+            Constants$root.C_CHAR$LAYOUT.withName("IQenable")
         ).withName("dcOffset"),
         MemoryLayout.structLayout(
-            C_CHAR.withName("enable"),
-            C_CHAR.withName("decimationFactor"),
-            C_CHAR.withName("wideBandSignal")
+            Constants$root.C_CHAR$LAYOUT.withName("enable"),
+            Constants$root.C_CHAR$LAYOUT.withName("decimationFactor"),
+            Constants$root.C_CHAR$LAYOUT.withName("wideBandSignal")
         ).withName("decimation"),
         MemoryLayout.paddingLayout(24),
         MemoryLayout.structLayout(
-            C_INT.withName("enable"),
-            C_INT.withName("setPoint_dBfs"),
-            C_SHORT.withName("attack_ms"),
-            C_SHORT.withName("decay_ms"),
-            C_SHORT.withName("decay_delay_ms"),
-            C_SHORT.withName("decay_threshold_dB"),
-            C_INT.withName("syncUpdate")
+            Constants$root.C_INT$LAYOUT.withName("enable"),
+            Constants$root.C_INT$LAYOUT.withName("setPoint_dBfs"),
+            Constants$root.C_SHORT$LAYOUT.withName("attack_ms"),
+            Constants$root.C_SHORT$LAYOUT.withName("decay_ms"),
+            Constants$root.C_SHORT$LAYOUT.withName("decay_delay_ms"),
+            Constants$root.C_SHORT$LAYOUT.withName("decay_threshold_dB"),
+            Constants$root.C_INT$LAYOUT.withName("syncUpdate")
         ).withName("agc"),
-        C_INT.withName("adsbMode")
+        Constants$root.C_INT$LAYOUT.withName("adsbMode")
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_ControlParamsT.$struct$LAYOUT;
@@ -42,7 +43,7 @@ public class sdrplay_api_ControlParamsT {
     public static MemorySegment agc$slice(MemorySegment seg) {
         return seg.asSlice(8, 20);
     }
-    static final VarHandle adsbMode$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("adsbMode"));
+    static final VarHandle adsbMode$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("adsbMode"));
     public static VarHandle adsbMode$VH() {
         return sdrplay_api_ControlParamsT.adsbMode$VH;
     }
@@ -60,12 +61,12 @@ public class sdrplay_api_ControlParamsT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

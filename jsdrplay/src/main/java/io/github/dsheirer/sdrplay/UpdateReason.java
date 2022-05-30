@@ -1,7 +1,6 @@
 package io.github.dsheirer.sdrplay;
 
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_h;
-
 import java.util.EnumSet;
 
 /**

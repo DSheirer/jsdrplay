@@ -2,22 +2,23 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_FsFreqT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        C_DOUBLE.withName("fsHz"),
-        C_CHAR.withName("syncUpdate"),
-        C_CHAR.withName("reCal"),
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        Constants$root.C_DOUBLE$LAYOUT.withName("fsHz"),
+        Constants$root.C_CHAR$LAYOUT.withName("syncUpdate"),
+        Constants$root.C_CHAR$LAYOUT.withName("reCal"),
         MemoryLayout.paddingLayout(48)
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_FsFreqT.$struct$LAYOUT;
     }
-    static final VarHandle fsHz$VH = $struct$LAYOUT.varHandle(double.class, MemoryLayout.PathElement.groupElement("fsHz"));
+    static final VarHandle fsHz$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("fsHz"));
     public static VarHandle fsHz$VH() {
         return sdrplay_api_FsFreqT.fsHz$VH;
     }
@@ -33,7 +34,7 @@ public class sdrplay_api_FsFreqT {
     public static void fsHz$set(MemorySegment seg, long index, double x) {
         sdrplay_api_FsFreqT.fsHz$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle syncUpdate$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("syncUpdate"));
+    static final VarHandle syncUpdate$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("syncUpdate"));
     public static VarHandle syncUpdate$VH() {
         return sdrplay_api_FsFreqT.syncUpdate$VH;
     }
@@ -49,7 +50,7 @@ public class sdrplay_api_FsFreqT {
     public static void syncUpdate$set(MemorySegment seg, long index, byte x) {
         sdrplay_api_FsFreqT.syncUpdate$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle reCal$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("reCal"));
+    static final VarHandle reCal$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("reCal"));
     public static VarHandle reCal$VH() {
         return sdrplay_api_FsFreqT.reCal$VH;
     }
@@ -67,12 +68,12 @@ public class sdrplay_api_FsFreqT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

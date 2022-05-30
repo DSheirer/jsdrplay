@@ -2,9 +2,9 @@ package io.github.dsheirer.sdrplay.device;
 
 import io.github.dsheirer.sdrplay.SDRplayException;
 import io.github.dsheirer.sdrplay.UpdateReason;
+import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
 import io.github.dsheirer.sdrplay.parameter.composite.RspDuoCompositeParameters;
 import io.github.dsheirer.sdrplay.SDRplay;
-import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

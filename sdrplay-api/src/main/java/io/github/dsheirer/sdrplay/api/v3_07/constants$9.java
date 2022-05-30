@@ -3,66 +3,61 @@
 package io.github.dsheirer.sdrplay.api.v3_07;
 
 import java.lang.invoke.MethodHandle;
-
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 class constants$9 {
 
-    static final FunctionDescriptor sdrplay_api_GetDeviceParams$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_GetDeviceParams$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_GetDeviceParams$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_GetDeviceParams",
-        "(Ljdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;)I",
+        "sdrplay_api_GetDeviceParams",
         constants$9.sdrplay_api_GetDeviceParams$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_Init$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER,
-        C_POINTER,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_Init$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_Init$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_Init",
-        "(Ljdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;)I",
+        "sdrplay_api_Init",
         constants$9.sdrplay_api_Init$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_Uninit$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_Uninit$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_Uninit$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_Uninit",
-        "(Ljdk/incubator/foreign/MemoryAddress;)I",
+        "sdrplay_api_Uninit",
         constants$9.sdrplay_api_Uninit$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_Update$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER,
-        C_INT,
-        C_INT,
-        C_INT
+    static final FunctionDescriptor sdrplay_api_Update$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_INT$LAYOUT,
+        Constants$root.C_INT$LAYOUT
     );
     static final MethodHandle sdrplay_api_Update$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_Update",
-        "(Ljdk/incubator/foreign/MemoryAddress;III)I",
+        "sdrplay_api_Update",
         constants$9.sdrplay_api_Update$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_SwapRspDuoActiveTuner$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER,
-        C_POINTER,
-        C_INT
+    static final FunctionDescriptor sdrplay_api_SwapRspDuoActiveTuner$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_INT$LAYOUT
     );
     static final MethodHandle sdrplay_api_SwapRspDuoActiveTuner$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_SwapRspDuoActiveTuner",
-        "(Ljdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;I)I",
+        "sdrplay_api_SwapRspDuoActiveTuner",
         constants$9.sdrplay_api_SwapRspDuoActiveTuner$FUNC, false
     );
-    static final FunctionDescriptor sdrplay_api_SwapRspDuoDualTunerModeSampleRate$FUNC = FunctionDescriptor.of(C_INT,
-        C_POINTER,
-        C_POINTER
+    static final FunctionDescriptor sdrplay_api_SwapRspDuoDualTunerModeSampleRate$FUNC = FunctionDescriptor.of(Constants$root.C_INT$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT,
+        Constants$root.C_POINTER$LAYOUT
     );
     static final MethodHandle sdrplay_api_SwapRspDuoDualTunerModeSampleRate$MH = RuntimeHelper.downcallHandle(
-        sdrplay_api_h.LIBRARIES, "sdrplay_api_SwapRspDuoDualTunerModeSampleRate",
-        "(Ljdk/incubator/foreign/MemoryAddress;Ljdk/incubator/foreign/MemoryAddress;)I",
+        "sdrplay_api_SwapRspDuoDualTunerModeSampleRate",
         constants$9.sdrplay_api_SwapRspDuoDualTunerModeSampleRate$FUNC, false
     );
 }

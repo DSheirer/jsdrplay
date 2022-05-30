@@ -1,6 +1,5 @@
 package io.github.dsheirer.sdrplay.device;
 
-import io.github.dsheirer.sdrplay.DeviceSelectionMode;
 import io.github.dsheirer.sdrplay.SDRplay;
 import io.github.dsheirer.sdrplay.Version;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceT;
@@ -26,7 +25,7 @@ public class DeviceFactory
     {
         if(version.gte(Version.V3_08))
         {
-            return io.github.dsheirer.sdrplay.api.v3_08.sdrplay_api_DeviceT.allocateArray(sdrplay_api_h.SDRPLAY_MAX_DEVICES(), segmentAllocator);
+//            return io.github.dsheirer.sdrplay.api.v3_08.sdrplay_api_DeviceT.allocateArray(sdrplay_api_h.SDRPLAY_MAX_DEVICES(), segmentAllocator);
         }
         else if(version == Version.V3_07)
         {
@@ -51,11 +50,11 @@ public class DeviceFactory
 
         if(version.gte(Version.V3_08))
         {
-            devicesArray.elements(io.github.dsheirer.sdrplay.api.v3_08.sdrplay_api_DeviceT.$LAYOUT())
-                    .limit(count).forEach(memorySegment ->
-            {
-                devices.add(DeviceFactory.createDevice(sdrplay, memorySegment));
-            });
+//            devicesArray.elements(io.github.dsheirer.sdrplay.api.v3_08.sdrplay_api_DeviceT.$LAYOUT())
+//                    .limit(count).forEach(memorySegment ->
+//            {
+//                devices.add(DeviceFactory.createDevice(sdrplay, memorySegment));
+//            });
         }
         else if(version == Version.V3_07)
         {
@@ -117,10 +116,10 @@ public class DeviceFactory
         {
             return new DeviceStruct_v3_07(deviceMemorySegment);
         }
-        else if(version.gte(Version.V3_08))
-        {
-            return new DeviceStruct_v3_08(deviceMemorySegment);
-        }
+//        else if(version.gte(Version.V3_08))
+//        {
+//            return new DeviceStruct_v3_08(deviceMemorySegment);
+//        }
         else
         {
             throw new IllegalArgumentException("Unsupported version: " + version);

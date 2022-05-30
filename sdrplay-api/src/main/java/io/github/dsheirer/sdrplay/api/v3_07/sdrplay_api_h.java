@@ -3,19 +3,21 @@
 package io.github.dsheirer.sdrplay.api.v3_07;
 
 import java.lang.invoke.MethodHandle;
-
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_h  {
 
-    static
-    {
-        //TODO: Move the library loading to the SDRplay class
-//        System.out.println("Library Path: " + System.getProperty("java.library.path"));
-//        System.loadLibrary("sdrplay_api");
-    }
-
-    static final SymbolLookup LIBRARIES = RuntimeHelper.lookup();    /* package-private */ sdrplay_api_h() {}
+    /* package-private */ sdrplay_api_h() {}
+    public static OfByte C_CHAR = Constants$root.C_CHAR$LAYOUT;
+    public static OfShort C_SHORT = Constants$root.C_SHORT$LAYOUT;
+    public static OfInt C_INT = Constants$root.C_INT$LAYOUT;
+    public static OfLong C_LONG = Constants$root.C_LONG_LONG$LAYOUT;
+    public static OfLong C_LONG_LONG = Constants$root.C_LONG_LONG$LAYOUT;
+    public static OfFloat C_FLOAT = Constants$root.C_FLOAT$LAYOUT;
+    public static OfDouble C_DOUBLE = Constants$root.C_DOUBLE$LAYOUT;
+    public static OfAddress C_POINTER = Constants$root.C_POINTER$LAYOUT;
     public static int RSPIA_NUM_LNA_STATES() {
         return (int)10L;
     }
@@ -268,6 +270,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_RspDuoModeChange() {
         return (int)3L;
     }
+    public static OfAddress HANDLE = Constants$root.C_POINTER$LAYOUT;
     public static int sdrplay_api_Success() {
         return (int)0L;
     }
@@ -506,7 +509,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_ApiVersion ( Addressable apiVer) {
         var mh$ = RuntimeHelper.requireNonNull(constants$7.sdrplay_api_ApiVersion$MH, "sdrplay_api_ApiVersion");
         try {
-            return (int)mh$.invokeExact(apiVer.address());
+            return (int)mh$.invokeExact(apiVer);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -539,7 +542,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_GetDevices ( Addressable devices,  Addressable numDevs,  int maxDevs) {
         var mh$ = RuntimeHelper.requireNonNull(constants$7.sdrplay_api_GetDevices$MH, "sdrplay_api_GetDevices");
         try {
-            return (int)mh$.invokeExact(devices.address(), numDevs.address(), maxDevs);
+            return (int)mh$.invokeExact(devices, numDevs, maxDevs);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -550,7 +553,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_SelectDevice ( Addressable device) {
         var mh$ = RuntimeHelper.requireNonNull(constants$8.sdrplay_api_SelectDevice$MH, "sdrplay_api_SelectDevice");
         try {
-            return (int)mh$.invokeExact(device.address());
+            return (int)mh$.invokeExact(device);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -561,7 +564,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_ReleaseDevice ( Addressable device) {
         var mh$ = RuntimeHelper.requireNonNull(constants$8.sdrplay_api_ReleaseDevice$MH, "sdrplay_api_ReleaseDevice");
         try {
-            return (int)mh$.invokeExact(device.address());
+            return (int)mh$.invokeExact(device);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -583,7 +586,7 @@ public class sdrplay_api_h  {
     public static MemoryAddress sdrplay_api_GetLastError ( Addressable device) {
         var mh$ = RuntimeHelper.requireNonNull(constants$8.sdrplay_api_GetLastError$MH, "sdrplay_api_GetLastError");
         try {
-            return (jdk.incubator.foreign.MemoryAddress)mh$.invokeExact(device.address());
+            return (jdk.incubator.foreign.MemoryAddress)mh$.invokeExact(device);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -605,7 +608,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_DebugEnable ( Addressable dev,  int enable) {
         var mh$ = RuntimeHelper.requireNonNull(constants$8.sdrplay_api_DebugEnable$MH, "sdrplay_api_DebugEnable");
         try {
-            return (int)mh$.invokeExact(dev.address(), enable);
+            return (int)mh$.invokeExact(dev, enable);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -616,7 +619,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_GetDeviceParams ( Addressable dev,  Addressable deviceParams) {
         var mh$ = RuntimeHelper.requireNonNull(constants$9.sdrplay_api_GetDeviceParams$MH, "sdrplay_api_GetDeviceParams");
         try {
-            return (int)mh$.invokeExact(dev.address(), deviceParams.address());
+            return (int)mh$.invokeExact(dev, deviceParams);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -627,7 +630,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_Init ( Addressable dev,  Addressable callbackFns,  Addressable cbContext) {
         var mh$ = RuntimeHelper.requireNonNull(constants$9.sdrplay_api_Init$MH, "sdrplay_api_Init");
         try {
-            return (int)mh$.invokeExact(dev.address(), callbackFns.address(), cbContext.address());
+            return (int)mh$.invokeExact(dev, callbackFns, cbContext);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -638,7 +641,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_Uninit ( Addressable dev) {
         var mh$ = RuntimeHelper.requireNonNull(constants$9.sdrplay_api_Uninit$MH, "sdrplay_api_Uninit");
         try {
-            return (int)mh$.invokeExact(dev.address());
+            return (int)mh$.invokeExact(dev);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -649,7 +652,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_Update ( Addressable dev,  int tuner,  int reasonForUpdate,  int reasonForUpdateExt1) {
         var mh$ = RuntimeHelper.requireNonNull(constants$9.sdrplay_api_Update$MH, "sdrplay_api_Update");
         try {
-            return (int)mh$.invokeExact(dev.address(), tuner, reasonForUpdate, reasonForUpdateExt1);
+            return (int)mh$.invokeExact(dev, tuner, reasonForUpdate, reasonForUpdateExt1);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -660,7 +663,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_SwapRspDuoActiveTuner ( Addressable dev,  Addressable currentTuner,  int tuner1AmPortSel) {
         var mh$ = RuntimeHelper.requireNonNull(constants$9.sdrplay_api_SwapRspDuoActiveTuner$MH, "sdrplay_api_SwapRspDuoActiveTuner");
         try {
-            return (int)mh$.invokeExact(dev.address(), currentTuner.address(), tuner1AmPortSel);
+            return (int)mh$.invokeExact(dev, currentTuner, tuner1AmPortSel);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -671,7 +674,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_SwapRspDuoDualTunerModeSampleRate ( Addressable dev,  Addressable currentSampleRate) {
         var mh$ = RuntimeHelper.requireNonNull(constants$9.sdrplay_api_SwapRspDuoDualTunerModeSampleRate$MH, "sdrplay_api_SwapRspDuoDualTunerModeSampleRate");
         try {
-            return (int)mh$.invokeExact(dev.address(), currentSampleRate.address());
+            return (int)mh$.invokeExact(dev, currentSampleRate);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }
@@ -682,7 +685,7 @@ public class sdrplay_api_h  {
     public static int sdrplay_api_SwapRspDuoMode ( Addressable currDevice,  Addressable deviceParams,  int rspDuoMode,  double sampleRate,  int tuner,  int bwType,  int ifType,  int tuner1AmPortSel) {
         var mh$ = RuntimeHelper.requireNonNull(constants$10.sdrplay_api_SwapRspDuoMode$MH, "sdrplay_api_SwapRspDuoMode");
         try {
-            return (int)mh$.invokeExact(currDevice.address(), deviceParams.address(), rspDuoMode, sampleRate, tuner, bwType, ifType, tuner1AmPortSel);
+            return (int)mh$.invokeExact(currDevice, deviceParams, rspDuoMode, sampleRate, tuner, bwType, ifType, tuner1AmPortSel);
         } catch (Throwable ex$) {
             throw new AssertionError("should not reach here", ex$);
         }

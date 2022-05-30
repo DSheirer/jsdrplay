@@ -2,20 +2,21 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_SyncUpdateT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        C_INT.withName("sampleNum"),
-        C_INT.withName("period")
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        Constants$root.C_INT$LAYOUT.withName("sampleNum"),
+        Constants$root.C_INT$LAYOUT.withName("period")
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_SyncUpdateT.$struct$LAYOUT;
     }
-    static final VarHandle sampleNum$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("sampleNum"));
+    static final VarHandle sampleNum$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("sampleNum"));
     public static VarHandle sampleNum$VH() {
         return sdrplay_api_SyncUpdateT.sampleNum$VH;
     }
@@ -31,7 +32,7 @@ public class sdrplay_api_SyncUpdateT {
     public static void sampleNum$set(MemorySegment seg, long index, int x) {
         sdrplay_api_SyncUpdateT.sampleNum$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle period$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("period"));
+    static final VarHandle period$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("period"));
     public static VarHandle period$VH() {
         return sdrplay_api_SyncUpdateT.period$VH;
     }
@@ -49,12 +50,12 @@ public class sdrplay_api_SyncUpdateT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

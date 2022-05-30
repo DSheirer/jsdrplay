@@ -1,7 +1,7 @@
 package io.github.dsheirer.sdrplay.parameter.tuner;
 
-import io.github.dsheirer.sdrplay.util.Flag;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_GainT;
+import io.github.dsheirer.sdrplay.util.Flag;
 import jdk.incubator.foreign.MemorySegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

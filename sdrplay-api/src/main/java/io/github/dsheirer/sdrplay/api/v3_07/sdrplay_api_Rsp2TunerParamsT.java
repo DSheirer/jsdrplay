@@ -2,24 +2,25 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_Rsp2TunerParamsT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        C_CHAR.withName("biasTEnable"),
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        Constants$root.C_CHAR$LAYOUT.withName("biasTEnable"),
         MemoryLayout.paddingLayout(24),
-        C_INT.withName("amPortSel"),
-        C_INT.withName("antennaSel"),
-        C_CHAR.withName("rfNotchEnable"),
+        Constants$root.C_INT$LAYOUT.withName("amPortSel"),
+        Constants$root.C_INT$LAYOUT.withName("antennaSel"),
+        Constants$root.C_CHAR$LAYOUT.withName("rfNotchEnable"),
         MemoryLayout.paddingLayout(24)
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_Rsp2TunerParamsT.$struct$LAYOUT;
     }
-    static final VarHandle biasTEnable$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("biasTEnable"));
+    static final VarHandle biasTEnable$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("biasTEnable"));
     public static VarHandle biasTEnable$VH() {
         return sdrplay_api_Rsp2TunerParamsT.biasTEnable$VH;
     }
@@ -35,7 +36,7 @@ public class sdrplay_api_Rsp2TunerParamsT {
     public static void biasTEnable$set(MemorySegment seg, long index, byte x) {
         sdrplay_api_Rsp2TunerParamsT.biasTEnable$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle amPortSel$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("amPortSel"));
+    static final VarHandle amPortSel$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("amPortSel"));
     public static VarHandle amPortSel$VH() {
         return sdrplay_api_Rsp2TunerParamsT.amPortSel$VH;
     }
@@ -51,7 +52,7 @@ public class sdrplay_api_Rsp2TunerParamsT {
     public static void amPortSel$set(MemorySegment seg, long index, int x) {
         sdrplay_api_Rsp2TunerParamsT.amPortSel$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle antennaSel$VH = $struct$LAYOUT.varHandle(int.class, MemoryLayout.PathElement.groupElement("antennaSel"));
+    static final VarHandle antennaSel$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("antennaSel"));
     public static VarHandle antennaSel$VH() {
         return sdrplay_api_Rsp2TunerParamsT.antennaSel$VH;
     }
@@ -67,7 +68,7 @@ public class sdrplay_api_Rsp2TunerParamsT {
     public static void antennaSel$set(MemorySegment seg, long index, int x) {
         sdrplay_api_Rsp2TunerParamsT.antennaSel$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle rfNotchEnable$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("rfNotchEnable"));
+    static final VarHandle rfNotchEnable$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("rfNotchEnable"));
     public static VarHandle rfNotchEnable$VH() {
         return sdrplay_api_Rsp2TunerParamsT.rfNotchEnable$VH;
     }
@@ -85,12 +86,12 @@ public class sdrplay_api_Rsp2TunerParamsT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

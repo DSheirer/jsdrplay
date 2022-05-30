@@ -1,8 +1,8 @@
 package io.github.dsheirer.sdrplay.parameter.device;
 
-import io.github.dsheirer.sdrplay.util.Flag;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DevParamsT;
 import io.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_RspDuoParamsT;
+import io.github.dsheirer.sdrplay.util.Flag;
 import jdk.incubator.foreign.MemorySegment;
 
 /**

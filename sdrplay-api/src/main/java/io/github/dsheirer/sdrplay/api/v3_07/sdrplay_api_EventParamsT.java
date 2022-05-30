@@ -2,21 +2,25 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
-import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import jdk.incubator.foreign.GroupLayout;
+import jdk.incubator.foreign.MemoryAddress;
+import jdk.incubator.foreign.MemoryLayout;
+import jdk.incubator.foreign.MemorySegment;
+import jdk.incubator.foreign.ResourceScope;
+import jdk.incubator.foreign.SegmentAllocator;
 public class sdrplay_api_EventParamsT {
 
-    static final MemoryLayout $union$LAYOUT = MemoryLayout.unionLayout(
+    static final  GroupLayout $union$LAYOUT = MemoryLayout.unionLayout(
         MemoryLayout.structLayout(
-            C_INT.withName("gRdB"),
-            C_INT.withName("lnaGRdB"),
-            C_DOUBLE.withName("currGain")
+            Constants$root.C_INT$LAYOUT.withName("gRdB"),
+            Constants$root.C_INT$LAYOUT.withName("lnaGRdB"),
+            Constants$root.C_DOUBLE$LAYOUT.withName("currGain")
         ).withName("gainParams"),
         MemoryLayout.structLayout(
-            C_INT.withName("powerOverloadChangeType")
+            Constants$root.C_INT$LAYOUT.withName("powerOverloadChangeType")
         ).withName("powerOverloadParams"),
         MemoryLayout.structLayout(
-            C_INT.withName("modeChangeType")
+            Constants$root.C_INT$LAYOUT.withName("modeChangeType")
         ).withName("rspDuoModeParams")
     );
     public static MemoryLayout $LAYOUT() {
@@ -33,12 +37,12 @@ public class sdrplay_api_EventParamsT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }

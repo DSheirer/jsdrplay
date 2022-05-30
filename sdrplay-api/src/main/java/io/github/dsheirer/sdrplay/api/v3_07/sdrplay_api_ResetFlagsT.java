@@ -2,21 +2,22 @@
 
 package io.github.dsheirer.sdrplay.api.v3_07;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
-
+import java.nio.ByteOrder;
 import jdk.incubator.foreign.*;
-import static jdk.incubator.foreign.CLinker.*;
+import static jdk.incubator.foreign.ValueLayout.*;
 public class sdrplay_api_ResetFlagsT {
 
-    static final MemoryLayout $struct$LAYOUT = MemoryLayout.structLayout(
-        C_CHAR.withName("resetGainUpdate"),
-        C_CHAR.withName("resetRfUpdate"),
-        C_CHAR.withName("resetFsUpdate")
+    static final  GroupLayout $struct$LAYOUT = MemoryLayout.structLayout(
+        Constants$root.C_CHAR$LAYOUT.withName("resetGainUpdate"),
+        Constants$root.C_CHAR$LAYOUT.withName("resetRfUpdate"),
+        Constants$root.C_CHAR$LAYOUT.withName("resetFsUpdate")
     );
     public static MemoryLayout $LAYOUT() {
         return sdrplay_api_ResetFlagsT.$struct$LAYOUT;
     }
-    static final VarHandle resetGainUpdate$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("resetGainUpdate"));
+    static final VarHandle resetGainUpdate$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("resetGainUpdate"));
     public static VarHandle resetGainUpdate$VH() {
         return sdrplay_api_ResetFlagsT.resetGainUpdate$VH;
     }
@@ -32,7 +33,7 @@ public class sdrplay_api_ResetFlagsT {
     public static void resetGainUpdate$set(MemorySegment seg, long index, byte x) {
         sdrplay_api_ResetFlagsT.resetGainUpdate$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle resetRfUpdate$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("resetRfUpdate"));
+    static final VarHandle resetRfUpdate$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("resetRfUpdate"));
     public static VarHandle resetRfUpdate$VH() {
         return sdrplay_api_ResetFlagsT.resetRfUpdate$VH;
     }
@@ -48,7 +49,7 @@ public class sdrplay_api_ResetFlagsT {
     public static void resetRfUpdate$set(MemorySegment seg, long index, byte x) {
         sdrplay_api_ResetFlagsT.resetRfUpdate$VH.set(seg.asSlice(index*sizeof()), x);
     }
-    static final VarHandle resetFsUpdate$VH = $struct$LAYOUT.varHandle(byte.class, MemoryLayout.PathElement.groupElement("resetFsUpdate"));
+    static final VarHandle resetFsUpdate$VH = $struct$LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("resetFsUpdate"));
     public static VarHandle resetFsUpdate$VH() {
         return sdrplay_api_ResetFlagsT.resetFsUpdate$VH;
     }
@@ -66,12 +67,12 @@ public class sdrplay_api_ResetFlagsT {
     }
     public static long sizeof() { return $LAYOUT().byteSize(); }
     public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.ofScope(scope)); }
     public static MemorySegment allocateArray(int len, SegmentAllocator allocator) {
         return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
     }
+    public static MemorySegment allocate(ResourceScope scope) { return allocate(SegmentAllocator.nativeAllocator(scope)); }
     public static MemorySegment allocateArray(int len, ResourceScope scope) {
-        return allocateArray(len, SegmentAllocator.ofScope(scope));
+        return allocateArray(len, SegmentAllocator.nativeAllocator(scope));
     }
     public static MemorySegment ofAddress(MemoryAddress addr, ResourceScope scope) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, scope); }
 }
