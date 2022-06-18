@@ -1,12 +1,12 @@
 package io.github.dsherer.sdrplay.test;
 
-import io.github.dsheirer.sdrplay.DeviceDescriptor;
-import io.github.dsheirer.sdrplay.DeviceSelectionMode;
-import io.github.dsheirer.sdrplay.SDRplay;
-import io.github.dsheirer.sdrplay.SDRplayException;
-import io.github.dsheirer.sdrplay.device.Device;
-import io.github.dsheirer.sdrplay.device.DeviceType;
-import io.github.dsheirer.sdrplay.parameter.tuner.SampleRate;
+import com.github.dsheirer.sdrplay.DeviceDescriptor;
+import com.github.dsheirer.sdrplay.DeviceSelectionMode;
+import com.github.dsheirer.sdrplay.SDRplay;
+import com.github.dsheirer.sdrplay.SDRplayException;
+import com.github.dsheirer.sdrplay.device.Device;
+import com.github.dsheirer.sdrplay.device.DeviceType;
+import com.github.dsheirer.sdrplay.parameter.tuner.SampleRate;
 import io.github.dsherer.sdrplay.test.listener.LoggingStreamConsumer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

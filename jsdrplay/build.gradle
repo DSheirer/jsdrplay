@@ -68,16 +68,10 @@ static String getJavaLibraryPath() {
     return "";
 }
 
-//publishing {
-//    repositories {
-//        maven {
-//            name = "Jitpack.io"
-//            url = "https://jitpack.io"
-//        }
-//    }
-//    publications {
-//        gpr(MavenPublication) {
-//            from(components.java)
-//        }
-//    }
-//}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}

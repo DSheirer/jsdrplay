@@ -1,15 +1,15 @@
 module io.github.dsheirer.sdrplay {
-    exports io.github.dsheirer.sdrplay;
-    exports io.github.dsheirer.sdrplay.device;
-    exports io.github.dsheirer.sdrplay.callback;
-    exports io.github.dsheirer.sdrplay.parameter.composite;
-    exports io.github.dsheirer.sdrplay.parameter.device;
-    exports io.github.dsheirer.sdrplay.parameter.tuner;
-    exports io.github.dsheirer.sdrplay.parameter.control;
-    exports io.github.dsheirer.sdrplay.error;
-    exports io.github.dsheirer.sdrplay.parameter.event;
-    exports io.github.dsheirer.sdrplay.util;
-    exports io.github.dsheirer.sdrplay.async;
+    exports com.github.dsheirer.sdrplay;
+    exports com.github.dsheirer.sdrplay.device;
+    exports com.github.dsheirer.sdrplay.callback;
+    exports com.github.dsheirer.sdrplay.parameter.composite;
+    exports com.github.dsheirer.sdrplay.parameter.device;
+    exports com.github.dsheirer.sdrplay.parameter.tuner;
+    exports com.github.dsheirer.sdrplay.parameter.control;
+    exports com.github.dsheirer.sdrplay.error;
+    exports com.github.dsheirer.sdrplay.parameter.event;
+    exports com.github.dsheirer.sdrplay.util;
+    exports com.github.dsheirer.sdrplay.async;
 
     requires ch.qos.logback.classic;
     requires jdk.incubator.foreign;

@@ -1,7 +1,7 @@
 package io.github.dsherer.sdrplay.test;
 
-import io.github.dsheirer.sdrplay.SDRplay;
-import io.github.dsheirer.sdrplay.parameter.tuner.GainReduction;
+import com.github.dsheirer.sdrplay.SDRplay;
+import com.github.dsheirer.sdrplay.parameter.tuner.GainReduction;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

@@ -1,13 +1,13 @@
 package io.github.dsherer.sdrplay.test.listener;
 
-import io.github.dsheirer.sdrplay.SDRplayException;
-import io.github.dsheirer.sdrplay.callback.IDeviceEventListener;
-import io.github.dsheirer.sdrplay.device.Device;
-import io.github.dsheirer.sdrplay.device.TunerSelect;
-import io.github.dsheirer.sdrplay.parameter.event.EventType;
-import io.github.dsheirer.sdrplay.parameter.event.GainCallbackParameters;
-import io.github.dsheirer.sdrplay.parameter.event.PowerOverloadCallbackParameters;
-import io.github.dsheirer.sdrplay.parameter.event.RspDuoModeCallbackParameters;
+import com.github.dsheirer.sdrplay.SDRplayException;
+import com.github.dsheirer.sdrplay.callback.IDeviceEventListener;
+import com.github.dsheirer.sdrplay.device.Device;
+import com.github.dsheirer.sdrplay.device.TunerSelect;
+import com.github.dsheirer.sdrplay.parameter.event.EventType;
+import com.github.dsheirer.sdrplay.parameter.event.GainCallbackParameters;
+import com.github.dsheirer.sdrplay.parameter.event.PowerOverloadCallbackParameters;
+import com.github.dsheirer.sdrplay.parameter.event.RspDuoModeCallbackParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

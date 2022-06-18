@@ -1,8 +1,8 @@
 package io.github.dsherer.sdrplay.test.listener;
 
-import io.github.dsheirer.sdrplay.SDRplayException;
-import io.github.dsheirer.sdrplay.callback.IDeviceEventListener;
-import io.github.dsheirer.sdrplay.device.Device;
+import com.github.dsheirer.sdrplay.SDRplayException;
+import com.github.dsheirer.sdrplay.callback.IDeviceEventListener;
+import com.github.dsheirer.sdrplay.device.Device;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class LoggingStreamConsumer
 
     /**
      * Initializes the device, consumes samples for the specified period and then uninitializes the device.
-     * @param durationMS duration of the test in seconds.
+     * @param durationSeconds duration of the test in seconds.
      * @throws SDRplayException
      */
     public void process(int durationSeconds) throws SDRplayException
