@@ -1,14 +1,14 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'signing'
 }
 
-group 'io.github.dsheirer'
-version '3.8.0-SNAPSHOT'
+group 'com.github.DSheirer'
+version '3.8.0.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url "https://jitpack.io"  }
 }
 
 //Java 18 is required for this version of the Project Panama incubator feature
@@ -68,26 +68,16 @@ static String getJavaLibraryPath() {
     return "";
 }
 
-/**
- * Publishes the library to GitHub repository
- * Note: username and GitHub personal access token (PAT) stored in user /.gradle/gradle.properties file.
- *
- * > gradle publish
- */
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/dsheirer/jsdrplay")
-            credentials {
-                username = project.findProperty("github.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("github.token") ?: System.getenv("TOKEN")
-            }
-        }
-    }
-    publications {
-        gpr(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
+//publishing {
+//    repositories {
+//        maven {
+//            name = "Jitpack.io"
+//            url = "https://jitpack.io"
+//        }
+//    }
+//    publications {
+//        gpr(MavenPublication) {
+//            from(components.java)
+//        }
+//    }
+//}

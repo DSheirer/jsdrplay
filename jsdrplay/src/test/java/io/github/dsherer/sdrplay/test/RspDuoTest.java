@@ -1,14 +1,13 @@
 package io.github.dsherer.sdrplay.test;
 
+import io.github.dsheirer.sdrplay.DeviceDescriptor;
 import io.github.dsheirer.sdrplay.DeviceSelectionMode;
 import io.github.dsheirer.sdrplay.SDRplay;
-import io.github.dsheirer.sdrplay.DeviceDescriptor;
 import io.github.dsheirer.sdrplay.SDRplayException;
 import io.github.dsheirer.sdrplay.device.Device;
 import io.github.dsheirer.sdrplay.device.DeviceType;
 import io.github.dsheirer.sdrplay.device.RspDuoDevice;
 import io.github.dsheirer.sdrplay.device.RspDuoDualIndependentTunerDevice;
-import io.github.dsheirer.sdrplay.parameter.control.AgcMode;
 import io.github.dsheirer.sdrplay.parameter.tuner.IfMode;
 import io.github.dsheirer.sdrplay.parameter.tuner.SampleRate;
 import io.github.dsherer.sdrplay.test.listener.LoggingStreamConsumer;
@@ -17,10 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit testing for an RSPduo device
@@ -195,7 +190,7 @@ public class RspDuoTest
         {
             api.close();
         }
-        catch(SDRplayException se)
+        catch(Exception se)
         {
             mLog.error("Error closing api");
         }
