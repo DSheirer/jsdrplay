@@ -1,5 +1,4 @@
 group 'com.github.DSheirer'
-version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
