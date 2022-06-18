@@ -1,12 +1,21 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'io.github.dsheirer'
-version '1.0.0-SNAPSHOT'
+version '3.8.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url "https://jitpack.io"  }
+}
+
+//Java 18 is required for this version of the Project Panama incubator feature
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(18)
+    }
 }
 
 dependencies {

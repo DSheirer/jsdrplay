@@ -34,7 +34,7 @@ public class RspDeviceTest
         {
             api.close();
         }
-        catch(SDRplayException se)
+        catch(Exception se)
         {
             mLog.error("Error closing API", se);
         }
@@ -117,7 +117,7 @@ public class RspDeviceTest
         {
             api.close();
         }
-        catch(SDRplayException se)
+        catch(Exception se)
         {
             mLog.error("Error closing api");
         }
