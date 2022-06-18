@@ -1,7 +1,7 @@
 package io.github.dsherer.sdrplay.test.listener;
 
-import io.github.dsheirer.sdrplay.callback.IStreamListener;
-import io.github.dsheirer.sdrplay.callback.StreamCallbackParameters;
+import com.github.dsheirer.sdrplay.callback.IStreamListener;
+import com.github.dsheirer.sdrplay.callback.StreamCallbackParameters;
 import io.github.dsherer.sdrplay.test.Window;
 import org.apache.commons.math3.util.FastMath;
 import org.jtransforms.fft.FloatFFT_1D;

@@ -29,3 +29,11 @@ test {
     exclude '**/*'
     useJUnitPlatform()
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
