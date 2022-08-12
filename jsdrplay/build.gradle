@@ -43,7 +43,7 @@ test {
     useJUnitPlatform()
 
     //Exclude all tests by default.  Comment out this line to run tests.
-    exclude '**/*'
+//    exclude '**/*'
 }
 
 /**

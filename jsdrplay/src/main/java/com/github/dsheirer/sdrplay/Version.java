@@ -68,4 +68,11 @@ public enum Version
 
         return UNKNOWN;
     }
+
+
+    @Override
+    public String toString()
+    {
+        return String.valueOf(mValue);
+    }
 }

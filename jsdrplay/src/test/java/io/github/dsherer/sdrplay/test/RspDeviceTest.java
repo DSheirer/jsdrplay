@@ -67,13 +67,14 @@ public class RspDeviceTest
     private void testDevice(DeviceType deviceType, DeviceSelectionMode deviceSelectionMode)
     {
         SDRplay api = new SDRplay();
+        mLog.info("Version: " + api.getVersion());
 
         DeviceDescriptor deviceDescriptor = api.getDevice(deviceType);
 
         if(deviceDescriptor != null)
         {
             mLog.info("Testing: " + deviceDescriptor + " With Device Selection Mode: " + deviceSelectionMode);
-
+            mLog.info("Available Selection Modes: " + deviceDescriptor.getDeviceSelectionModes());
             if(deviceDescriptor.getDeviceSelectionModes().contains(deviceSelectionMode))
             {
                 try
@@ -104,7 +105,7 @@ public class RspDeviceTest
                 }
                 catch(SDRplayException se)
                 {
-                    mLog.error("Error releasing device", se);
+                    mLog.error("Error testing device", se);
                 }
             }
         }

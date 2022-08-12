@@ -177,7 +177,7 @@ public class RspDuoTest
                 }
                 catch(SDRplayException se)
                 {
-                    mLog.error("Error releasing device", se);
+                    mLog.error("Error testing device", se);
                 }
             }
         }

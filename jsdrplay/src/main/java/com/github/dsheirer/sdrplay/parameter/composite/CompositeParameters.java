@@ -1,5 +1,6 @@
 package com.github.dsheirer.sdrplay.parameter.composite;
 
+import com.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DevParamsT;
 import com.github.dsheirer.sdrplay.api.v3_07.sdrplay_api_DeviceParamsT;
 import com.github.dsheirer.sdrplay.device.DeviceType;
 import com.github.dsheirer.sdrplay.parameter.device.DeviceParameters;
@@ -35,7 +36,7 @@ public class CompositeParameters<D extends DeviceParameters, T extends TunerPara
     public CompositeParameters(DeviceType deviceType, MemorySegment memorySegment, ResourceScope resourceScope)
     {
         MemoryAddress parametersMemoryAddress = sdrplay_api_DeviceParamsT.devParams$get(memorySegment);
-        MemorySegment parametersMemorySegment = sdrplay_api_DeviceParamsT.ofAddress(parametersMemoryAddress, resourceScope);
+        MemorySegment parametersMemorySegment = sdrplay_api_DevParamsT.ofAddress(parametersMemoryAddress, resourceScope);
         mDeviceParameters = (D) DeviceParametersFactory.create(deviceType, parametersMemorySegment);
 
         MemoryAddress memoryAddressRxA = sdrplay_api_DeviceParamsT.rxChannelA$get(memorySegment);
