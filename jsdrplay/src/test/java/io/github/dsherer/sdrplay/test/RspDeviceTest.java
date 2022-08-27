@@ -81,6 +81,8 @@ public class RspDeviceTest
                 {
                     Device device = api.select(deviceDescriptor, deviceSelectionMode);
 
+                    mLog.info("Device: " + device.toString());
+
                     mLog.info("Selected: " + device.getClass());
 
                     mLog.info("Setting Sample Rate");

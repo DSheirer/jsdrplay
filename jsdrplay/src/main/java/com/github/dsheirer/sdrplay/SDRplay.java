@@ -412,7 +412,10 @@ public class SDRplay
 
         if(status.success())
         {
-            MemoryAddress memoryAddress = pointer.address();
+            //Get the memory address from the pointer's memory segment to where the structure is located
+            MemoryAddress memoryAddress = pointer.get(ValueLayout.ADDRESS, 0);
+
+            //The structure's memory is already allocated ... wrap a memory segment around it
             MemorySegment memorySegment = sdrplay_api_DeviceT.ofAddress(memoryAddress, mResourceScope);
             return CompositeParametersFactory.create(device.getDeviceType(), memorySegment, mResourceScope);
         }

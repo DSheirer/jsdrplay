@@ -392,8 +392,8 @@ public abstract class Device<T extends CompositeParameters<?,?>, R extends RspTu
     {
         if((decimation != 1) && (decimation % 2 != 0))
         {
-            throw new IllegalArgumentException("Invalid decimation rate [" + decimation + "] - must be 1 or an integer " +
-                    "multiple of 2 (e.g. 1, 2, 4, 8, etc)");
+            throw new IllegalArgumentException("Invalid decimation rate [" + decimation + "] - must an integer " +
+                    "power of 2 (e.g. 1, 2, 4, 8, etc)");
         }
 
         getCompositeParameters().getControlAParameters().getDecimation().setDecimationFactor(decimation);
