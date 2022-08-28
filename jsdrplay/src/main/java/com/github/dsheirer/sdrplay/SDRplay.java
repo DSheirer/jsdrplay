@@ -136,7 +136,7 @@ public class SDRplay
             String library = getSDRplayLibraryPath();
             mLog.info("Loading SDRplay Library from default install path: " + library);
             System.load(library);
-            mLog.info("SDRPlay API library loaded");
+            mLog.info("SDRPlay API library v" + getVersion() + " - loaded");
             return true;
         }
         catch(Throwable t)
