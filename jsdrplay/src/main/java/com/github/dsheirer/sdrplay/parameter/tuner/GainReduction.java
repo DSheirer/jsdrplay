@@ -136,6 +136,24 @@ public enum GainReduction
     }
 
     /**
+     * Identifies the index of the gain reduction value from the array of possible gain reduction values.
+     * @param gainReductionValue to lookup index
+     * @return matching index or -1 if a matching index is not found.
+     */
+    public int getGainIndex(int gainReductionValue)
+    {
+        for(int x = 0; x < mGainReductions.length; x++)
+        {
+            if(mGainReductions[x] == gainReductionValue)
+            {
+                return x;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * Minimum index for gain values
      */
     public static int MIN_GAIN_INDEX = 0;

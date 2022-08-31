@@ -237,6 +237,16 @@ public abstract class RspTuner<D extends DeviceParameters, T extends TunerParame
     }
 
     /**
+     * Current gain index value.
+     * @return current gain index value or -1 if the current gain setting does not match the possible gain reduction options.
+     */
+    public int getGainIndex()
+    {
+        int gainDb = getGain().getGainReductionDb();
+        return getGainReduction().getGainIndex(gainDb);
+    }
+
+    /**
      * Enables or disables DC correction
      *
      * @param enable true or false

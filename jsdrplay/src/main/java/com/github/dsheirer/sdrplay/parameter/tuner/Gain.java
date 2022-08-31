@@ -40,18 +40,13 @@ public class Gain
      */
     public void setGain(GainReduction gainReduction, int index)
     {
-
         mLog.info("Setting Gain - LNA:" + gainReduction.getLnaState(index) +
                 " Gain Reduction DB:" + gainReduction.getGainReduction(index) +
                 " Current LNA:" + getLNA() + " Current GRDB:" + getGainReductionDb());
         mLog.info("Gain Values: " + getGainValues());
-//        setLNA(gainReduction.getLnaState(index));
-//        setGainReductionDb(gainReduction.getGainReduction(index));
 
-        //TODO: remove after testing
-        setLNA(5);
-        setGainReductionDb(59);
-
+        setLNA(gainReduction.getLnaState(index));
+        setGainReductionDb(gainReduction.getGainReduction(index));
         setSynchronousUpdate(true);
     }
 
