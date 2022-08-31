@@ -524,6 +524,8 @@ public class SDRplay
         {
             throw new SDRplayUpdateException(status, Arrays.stream(updateReasons).toList());
         }
+
+        mLog.info("Submitted update for tuner: " + tunerSelect + " update: " + updateReasons);
     }
 
     /**

@@ -213,6 +213,10 @@ public abstract class Device<T extends CompositeParameters<?,?>, R extends RspTu
         {
             submitUpdate(tunerSelect, updateReasons);
         }
+        else
+        {
+            mLog.error("Can't apply update to [" + tunerSelect + "] - device is not initialized.  Updates: " + updateReasons);
+        }
     }
 
     /**
