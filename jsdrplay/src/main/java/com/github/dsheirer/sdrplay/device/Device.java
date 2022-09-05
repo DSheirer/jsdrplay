@@ -215,8 +215,36 @@ public abstract class Device<T extends CompositeParameters<?,?>, R extends RspTu
         }
         else
         {
-            mLog.error("Can't apply update to [" + tunerSelect + "] - device is not initialized.  Updates: " + updateReasons);
+            mLog.error("Can't apply update to [" + tunerSelect + "] - device is not initialized.  Updates: " +
+                    toString(updateReasons));
         }
+    }
+
+    private String toString(UpdateReason ... updateReasons)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        boolean first = true;
+
+        for(UpdateReason updateReason: updateReasons)
+        {
+            if(first)
+            {
+                sb.append("[");
+            }
+            else
+            {
+                sb.append(", ");
+            }
+
+            sb.append(updateReason.name());
+
+            first = false;
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 
     /**
@@ -478,7 +506,9 @@ public abstract class Device<T extends CompositeParameters<?,?>, R extends RspTu
          */
         private synchronized void processQueues()
         {
+            mLog.info("processQueues() invoking ...");
             mLock.lock();
+            mLog.info("processQueues() executing ...");
 
             try
             {
@@ -563,6 +593,8 @@ public abstract class Device<T extends CompositeParameters<?,?>, R extends RspTu
             {
                 processQueuesAfterDelay(UPDATE_QUEUE_PROCESSING_INTERVAL_MS);
             }
+
+            mLog.info("processQueues() finished");
         }
 
         /**
