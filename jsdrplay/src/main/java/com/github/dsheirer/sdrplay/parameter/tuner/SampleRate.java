@@ -87,7 +87,7 @@ public enum SampleRate
      */
     public long getEffectiveSampleRate()
     {
-        return getSampleRate() / getDecimationRate();
+        return getSampleRate() / getDecimation();
     }
 
     /**
