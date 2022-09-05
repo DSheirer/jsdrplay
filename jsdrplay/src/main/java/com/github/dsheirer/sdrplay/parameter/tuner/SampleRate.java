@@ -70,7 +70,7 @@ public enum SampleRate
 
     private int getDecimationRate()
     {
-        return (int)Math.pow(2, getDecimationRate());
+        return (int)Math.pow(2, getDecimation());
     }
 
     /**
@@ -87,7 +87,7 @@ public enum SampleRate
      */
     public long getEffectiveSampleRate()
     {
-        return getSampleRate() / getDecimation();
+        return getSampleRate() / getDecimationRate();
     }
 
     /**
