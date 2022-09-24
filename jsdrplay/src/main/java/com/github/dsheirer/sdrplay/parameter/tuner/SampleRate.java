@@ -68,11 +68,6 @@ public enum SampleRate
         return mDecimation;
     }
 
-    private int getDecimationRate()
-    {
-        return (int)Math.pow(2, getDecimation());
-    }
-
     /**
      * Indicates if this sample rate specifies decimation
      */
@@ -87,7 +82,7 @@ public enum SampleRate
      */
     public long getEffectiveSampleRate()
     {
-        return getSampleRate() / getDecimationRate();
+        return getSampleRate() / getDecimation();
     }
 
     /**
