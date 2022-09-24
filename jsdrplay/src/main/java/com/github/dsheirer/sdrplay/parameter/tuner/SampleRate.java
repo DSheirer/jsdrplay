@@ -10,15 +10,15 @@ import java.util.EnumSet;
  */
 public enum SampleRate
 {
-    RATE_0_250(2_000_000, Bandwidth.BW_0_200, 4, "0.250 MHz"),
-    RATE_0_300(2_400_000, Bandwidth.BW_0_300, 4, "0.300 MHz"),
-    RATE_0_600(2_400_000, Bandwidth.BW_0_600, 2,  "0.600 MHz"),
-    RATE_1_600(3_200_000, Bandwidth.BW_1_536, 1, "1.600 MHz"),
-    RATE_6_000(6_000_000, Bandwidth.BW_5_000, 0, "6.000 MHz"),
-    RATE_7_000(7_000_000, Bandwidth.BW_6_000, 0, "7.000 MHz"),
-    RATE_8_000(8_000_000, Bandwidth.BW_7_000, 0, "8.000 MHz"),
-    RATE_9_000(9_000_000, Bandwidth.BW_8_000, 0, "9.000 MHz"),
-    RATE_10_000(10_000_000, Bandwidth.BW_8_000, 0, "10.000 MHz"),
+    RATE_0_250(2_000_000, Bandwidth.BW_0_200, 8, "0.250 MHz"),
+    RATE_0_300(2_400_000, Bandwidth.BW_0_300, 8, "0.300 MHz"),
+    RATE_0_600(2_400_000, Bandwidth.BW_0_600, 4,  "0.600 MHz"),
+    RATE_1_600(3_200_000, Bandwidth.BW_1_536, 2, "1.600 MHz"),
+    RATE_6_000(6_000_000, Bandwidth.BW_5_000, 1, "6.000 MHz"),
+    RATE_7_000(7_000_000, Bandwidth.BW_6_000, 1, "7.000 MHz"),
+    RATE_8_000(8_000_000, Bandwidth.BW_7_000, 1, "8.000 MHz"),
+    RATE_9_000(9_000_000, Bandwidth.BW_8_000, 1, "9.000 MHz"),
+    RATE_10_000(10_000_000, Bandwidth.BW_8_000, 1, "10.000 MHz"),
 
     /**
      * Note: in dual tuner mode, available sample rates are 6 or 8 MHz with an effective output rate of
