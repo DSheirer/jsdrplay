@@ -27,7 +27,7 @@ code from the native header file:
 2. Locate the library headers.
    * Linux: /usr/local/include/*.h
    * Windows: C:\Program Files\SDRplay\API\inc\*.h
-   * MacOS: ??
+   * MacOS: /usr/local/include/*.h
 3. cd into the library source directory: (project)/jsdrplay/sdrplay-api/src/main/java/
 4. Run: **jextract -t io.github.dsheirer.sdrplay.api /usr/local/include/sdrplay_api.h -l libsdrplay_api --source**
 
