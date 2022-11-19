@@ -46,7 +46,7 @@ public class SDRplay
 {
     public static final String SDRPLAY_API_LIBRARY_NAME = "sdrplay_api";
     public static final String SDRPLAY_API_PATH_LINUX = "/usr/local/lib/libsdrplay_api.so";
-    public static final String SDRPLAY_API_PATH_MAC_OS = "/usr/local/lib/libsdrplay_api.dylib";
+    public static final String SDRPLAY_API_PATH_MAC_OS = "/usr/local/lib/libsdrplay_api.so";
     public static final String SDRPLAY_API_PATH_WINDOWS = System.getenv("ProgramFiles") +
             "\\SDRplay\\API\\" + (System.getProperty("sun.arch.data.model").contentEquals("64") ? "x64" : "x86");
     public static final String JAVA_LIBRARY_PATH_KEY = "java.library.path";
