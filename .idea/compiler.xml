@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="18" />
+    <bytecodeTargetLevel target="23" />
   </component>
   <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_STRING" value="--add-modules jdk.incubator.foreign --enable-native-access=ALL-UNNAMED" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-Xlint:all -Xlint:-restricted -Werror" />
   </component>
 </project>

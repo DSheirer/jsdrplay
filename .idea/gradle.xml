@@ -4,14 +4,10 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="$USER_HOME$/.sdkman/candidates/gradle/7.2" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/jsdrplay" />
-            <option value="$PROJECT_DIR$/sdrplay-api" />
           </set>
         </option>
       </GradleProjectSettings>
