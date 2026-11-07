@@ -42,11 +42,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * {@code sdrplay_api_Open} and the last {@link #close()} calls
  * {@code sdrplay_api_Close}. The methods of all sessions run one at a time.
  *
- * <p>The one exception is an RSPduo slave whose master this application also
- * selected: the API rejects a slave selected by the master's own API client,
- * so {@link #selectRspDuo} first calls {@code sdrplay_api_Open} again, which
- * starts a new client. The API does not count these calls, and a second
- * {@code sdrplay_api_Close} would free its resources twice, so the last
+ * <p>The API allows one selected device per API client, and an RSPduo slave
+ * must use a different client from its master. So when this application
+ * already has a device selected with the current client, selecting another
+ * device, or the slave of its own master, first calls {@code sdrplay_api_Open}
+ * again, which starts a new client. The API does not count these calls, and a
+ * second {@code sdrplay_api_Close} would free its resources twice, so the last
  * {@link #close()} still calls {@code sdrplay_api_Close} only once.
  */
 public final class SDRplay implements AutoCloseable {
@@ -58,8 +59,8 @@ public final class SDRplay implements AutoCloseable {
     private static float openVersion;
     /** Incremented by each {@code sdrplay_api_Open}, which starts a new API client. Guarded by LOCK. */
     private static int client;
-    /** RSPduo masters selected by this process and the client that selected each one. Guarded by LOCK. */
-    private static final Map<RspDuoDevice, Integer> MASTERS = new IdentityHashMap<>();
+    /** Devices selected by this process and the client that selected each one. Guarded by LOCK. */
+    private static final Map<RspDevice, Integer> SELECTED = new IdentityHashMap<>();
 
     private final Native api;
     private final float version;
@@ -226,10 +227,9 @@ public final class SDRplay implements AutoCloseable {
     /**
      * Selects an RSPduo in a particular mode.
      *
-     * <p>This application can select both the master and the slave: the
-     * slave is then selected as a separate API client; see {@link SDRplay}.
-     * Select the master first; {@link #devices()} lists the slave mode only
-     * after that.
+     * <p>This application can select both the master and the slave, each with
+     * its own API client; see {@link SDRplay}. Select the master first;
+     * {@link #devices()} lists the slave mode only after that.
      *
      * @param device an RSPduo from {@link #devices()}
      * @param mode one of the modes the device offers
@@ -310,7 +310,7 @@ public final class SDRplay implements AutoCloseable {
             throws SDRplayException {
         synchronized (LOCK) {
             checkOpen();
-            if (mode == RspDuoMode.SLAVE && selectedMasterOnCurrentClient(serialNumber)) {
+            if (SELECTED.containsValue(client)) {
                 check("sdrplay_api_Open", Native.invoke(api.open), api);
                 client++;
             }
@@ -361,9 +361,7 @@ public final class SDRplay implements AutoCloseable {
                     case UNKNOWN -> new Rsp1Device(selection);
                 };
                 devices.add(device);
-                if (device instanceof RspDuoDevice duo && mode == RspDuoMode.MASTER) {
-                    MASTERS.put(duo, client);
-                }
+                SELECTED.put(device, client);
                 return device;
             } catch (SDRplayException | RuntimeException e) {
                 deviceArena.close();
@@ -376,18 +374,8 @@ public final class SDRplay implements AutoCloseable {
     void forget(RspDevice device) {
         devices.remove(device);
         synchronized (LOCK) {
-            MASTERS.remove(device);
+            SELECTED.remove(device);
         }
-    }
-
-    /** Returns true if this process selected the master of the RSPduo with the API client in use now. */
-    private static boolean selectedMasterOnCurrentClient(String serialNumber) {
-        for (Map.Entry<RspDuoDevice, Integer> master : MASTERS.entrySet()) {
-            if (master.getValue() == client && master.getKey().serialNumber().equals(serialNumber)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private MemorySegment getDevices(Arena arena) throws SDRplayException {

@@ -344,6 +344,28 @@ class HardwareTest {
         }
     }
 
+    @Test
+    void twoDevicesStreamInOneProcess() throws Exception {
+        List<DeviceInfo> devices = sdrplay.devices();
+        Assumptions.assumeTrue(devices.size() >= 2, "Two SDRplay devices are needed");
+        try (RspDevice first = sdrplay.select(devices.get(0)); RspDevice second = sdrplay.select(devices.get(1))) {
+            configure(first);
+            configure(second);
+            CountDownLatch firstSamples = new CountDownLatch(20);
+            CountDownLatch secondSamples = new CountDownLatch(20);
+            first.start(buffer -> firstSamples.countDown());
+            second.start(buffer -> secondSamples.countDown());
+            assertTrue(firstSamples.await(10, TimeUnit.SECONDS), "Samples did not arrive from " + first);
+            assertTrue(secondSamples.await(10, TimeUnit.SECONDS), "Samples did not arrive from " + second);
+            first.channel().setFrequency(FREQUENCY + 1_000_000);
+            second.channel().setFrequency(FREQUENCY + 2_000_000);
+            first.stop();
+            second.stop();
+            assertNull(first.listenerFailure());
+            assertNull(second.listenerFailure());
+        }
+    }
+
     private static void configureDualTuner(RxChannel channel, double frequency) throws SDRplayException {
         channel.setIfMode(IfMode.KHZ_2048);
         channel.setBandwidth(Bandwidth.KHZ_1536);

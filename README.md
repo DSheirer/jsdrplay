@@ -116,11 +116,16 @@ try (RspDuoDevice duo = sdrplay.selectRspDuo(info, RspDuoMode.DUAL_TUNER, Tuner.
 
 In dual tuner mode the listener is called from two threads at once, one per
 tuner. Master mode takes the sample rate of both tuners, 6 or 8 MHz; another
-application, or this one, can then select the free tuner as slave. The API
-rejects a slave selected by its master's own API client, so when this
-application selected the master, `selectRspDuo` first opens a second client
-with `sdrplay_api_Open`. Select the master first: `devices()` offers slave mode
-only after that. jsdrplay does not expose
+application, or this one, can then select the free tuner as slave. Select the
+master first: `devices()` offers slave mode only after that.
+
+### Several devices
+
+An application can select several devices, including both tuners of an RSPduo
+as master and slave. The API allows one selected device per API client, so
+when a device is already selected, `select` and `selectRspDuo` first start
+another client with `sdrplay_api_Open`. The API does not count these calls, so
+the last session to close still calls `sdrplay_api_Close` only once. jsdrplay does not expose
 `sdrplay_api_SwapRspDuoMode` or `sdrplay_api_SwapRspDuoActiveTuner`: close the
 device and select it again in the new mode.
 
