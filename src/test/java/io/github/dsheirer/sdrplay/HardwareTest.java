@@ -304,4 +304,51 @@ class HardwareTest {
             assertEquals(Set.of(Tuner.B), seen);
         }
     }
+
+    @Test
+    void rspDuoMasterAndSlaveStreamInOneProcess() throws Exception {
+        DeviceInfo duo = sdrplay.devices().stream()
+            .filter(d -> d.rspDuoModes().contains(RspDuoMode.MASTER)).findFirst().orElse(null);
+        Assumptions.assumeTrue(duo != null, "No RSPduo available for master mode");
+        // Twice, since a master selected again uses the newest API client and its slave then needs another one.
+        for (int round = 0; round < 2; round++) {
+            try (RspDuoDevice master = sdrplay.selectRspDuo(duo, RspDuoMode.MASTER, Tuner.A, 8_000_000)) {
+                configureDualTuner(master.channel(), FREQUENCY);
+                CountDownLatch masterSamples = new CountDownLatch(20);
+                master.start(buffer -> masterSamples.countDown());
+                assertTrue(masterSamples.await(10, TimeUnit.SECONDS), "Master samples did not arrive");
+
+                DeviceInfo free = sdrplay.devices().stream()
+                    .filter(d -> d.serialNumber().equals(duo.serialNumber())).findFirst().orElseThrow();
+                assertTrue(free.rspDuoModes().contains(RspDuoMode.SLAVE), "Slave mode not offered: " + free);
+                // Twice, since the slave's API client stays usable after the slave is released.
+                for (int slaveRound = 0; slaveRound < 2; slaveRound++) {
+                    try (RspDuoDevice slave = sdrplay.selectRspDuo(free, RspDuoMode.SLAVE, Tuner.B, 0)) {
+                        assertEquals(Tuner.B, slave.channel().tuner());
+                        configureDualTuner(slave.channel(), FREQUENCY + 1_000_000);
+                        Set<Tuner> seen = ConcurrentHashMap.newKeySet();
+                        CountDownLatch slaveSamples = new CountDownLatch(20);
+                        slave.start(buffer -> {
+                            seen.add(buffer.tuner());
+                            slaveSamples.countDown();
+                        });
+                        assertTrue(slaveSamples.await(10, TimeUnit.SECONDS), "Slave samples did not arrive");
+                        slave.stop();
+                        assertEquals(Set.of(Tuner.B), seen);
+                        assertNull(slave.listenerFailure());
+                    }
+                }
+                master.stop();
+                assertNull(master.listenerFailure());
+            }
+        }
+    }
+
+    private static void configureDualTuner(RxChannel channel, double frequency) throws SDRplayException {
+        channel.setIfMode(IfMode.KHZ_2048);
+        channel.setBandwidth(Bandwidth.KHZ_1536);
+        channel.setFrequency(frequency);
+        channel.setAgc(AgcMode.DISABLED);
+        channel.setGain(40, 0);
+    }
 }
