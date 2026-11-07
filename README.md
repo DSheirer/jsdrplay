@@ -14,12 +14,11 @@ Requires Java 23 or later, and SDRplay API 3.15 or a later 3.x version.
 
 ## The SDRplay API is installed separately
 
-Unlike jAirspy, jAirspyHF, jBladeRF, jHydraSDR and jRTL, the jar does **not**
-contain the native library. The SDRplay API is closed source, so it cannot be
-built from source, and its licence does not allow it to be redistributed. It
-also needs a system service, which only SDRplay's installer sets up, to reach
-the devices. Install it from <https://www.sdrplay.com/api/>; jsdrplay finds the
-installed library at run time.
+The jar does **not** contain the native library. The SDRplay API is closed source, 
+so it cannot be built from source, and its licence does not allow it to be 
+redistributed. It also needs a system service, which only SDRplay's installer 
+sets up, to reach the devices. Install it from <https://www.sdrplay.com/api/>; 
+jsdrplay finds theinstalled library at run time.
 
 The jar is the same on every platform. Instead of a native build, CI checks the
 Java bindings on each of the six platforms against the C headers of the pinned
