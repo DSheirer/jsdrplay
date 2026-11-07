@@ -1,8 +1,0 @@
-group 'com.github.DSheirer'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-}

@@ -1,4 +1,0 @@
-rootProject.name = 'jsdrplay'
-include 'jsdrplay'
-include 'sdrplay-api'
-
