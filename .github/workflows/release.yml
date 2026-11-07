@@ -1,0 +1,68 @@
+# Publishes a release when a version tag is pushed. The tag has to start with
+# the SDRplay API version pinned in native/versions.env: v3.15.0, v3.15.1 for a
+# later jsdrplay release on the same API, or v3.15.0-rc1 for a pre-release.
+name: Release
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+*']
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - id: version
+        run: |
+          source native/versions.env
+          case "$GITHUB_REF_NAME" in
+            "v$SDRPLAY_API_VERSION".[0-9]*) ;;
+            *)
+              echo "::error::Tag $GITHUB_REF_NAME does not start with pinned SDRplay API version $SDRPLAY_API_VERSION"
+              exit 1
+              ;;
+          esac
+          echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: jars
+          path: jars
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          source native/versions.env
+          (cd jars && sha256sum *.jar > SHA256SUMS)
+          prerelease=()
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            prerelease=(--prerelease)
+          fi
+          gh release create "$GITHUB_REF_NAME" jars/* "${prerelease[@]}" \
+            --verify-tag --generate-notes --title "jsdrplay ${GITHUB_REF_NAME#v}" \
+            --notes "For SDRplay API ${SDRPLAY_API_VERSION} and later 3.x versions, which is not included: install it from https://www.sdrplay.com/api/
+
+          The bindings were checked on Linux, macOS and Windows, x86-64 and aarch64, against the headers of
+          \`$(basename "$SDRPLAY_INSTALLER_URL")\` (SHA-256 \`${SDRPLAY_INSTALLER_SHA256}\`)."
